@@ -24,6 +24,7 @@ Each lesson lives in its own folder and should include:
 Current lessons:
 
 1. [DNA, RNA, Protein: Interactive Central Dogma Lesson](./lessons/01-dna-rna-protein-interactive/README.md)
+2. [Gerund vs Infinitive: Terminal Grammar Coach](./lessons/02-gerund-infinitive-terminal-coach/README.md)
 
 ## Lesson Design Principle
 
@@ -72,6 +73,8 @@ Clone the repo, open a lesson folder, and inspect both:
 - the Markdown explanation of the teaching strategy
 
 For website-based lessons, open the `index.html` file directly in a browser.
+
+For terminal-based lessons, run the entry script shown in the lesson README.
 
 ## What This Repo Tries To Show
 
