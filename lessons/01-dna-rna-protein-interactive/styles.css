@@ -1,0 +1,1001 @@
+:root {
+  --bg: #f6efe1;
+  --bg-deep: #1f3a43;
+  --panel: rgba(255, 251, 244, 0.86);
+  --panel-strong: #fffaf1;
+  --line: rgba(31, 58, 67, 0.15);
+  --ink: #1e2d34;
+  --muted: #5f6f75;
+  --teal: #2a8c82;
+  --teal-dark: #1d625a;
+  --coral: #f27b59;
+  --gold: #f3b24c;
+  --berry: #8f4b7a;
+  --shadow: 0 22px 70px rgba(18, 38, 44, 0.14);
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(242, 123, 89, 0.22), transparent 28%),
+    radial-gradient(circle at top right, rgba(42, 140, 130, 0.22), transparent 26%),
+    linear-gradient(180deg, #f9f2e6 0%, #f6efe1 42%, #f0e7d8 100%);
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: auto;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(18px);
+}
+
+body::before {
+  width: 280px;
+  height: 280px;
+  top: 8%;
+  right: -80px;
+  background: rgba(243, 178, 76, 0.18);
+}
+
+body::after {
+  width: 360px;
+  height: 360px;
+  bottom: -120px;
+  left: -90px;
+  background: rgba(42, 140, 130, 0.16);
+}
+
+.page-shell {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 60px;
+}
+
+.hero,
+.concept-grid,
+.review-grid,
+.story-layout,
+.phase-layout,
+.lab-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.hero {
+  align-items: stretch;
+  grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.9fr);
+  margin-bottom: 28px;
+}
+
+.hero-copy {
+  padding: 28px 6px 10px 0;
+}
+
+.eyebrow,
+.section-label,
+.mini-label {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--teal-dark);
+  margin: 0 0 10px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.05;
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2.6rem, 5vw, 4.6rem);
+  max-width: 10.5ch;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  margin-bottom: 12px;
+}
+
+h3 {
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+  margin-bottom: 10px;
+}
+
+p {
+  line-height: 1.6;
+  margin: 0;
+}
+
+.hero-text {
+  margin-top: 18px;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.hero-actions,
+.story-controls,
+.concept-strip,
+.story-nav,
+.quick-notes,
+.phase-tabs,
+.virus-switch,
+.quiz-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-actions {
+  margin-top: 28px;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.36), transparent 45%);
+  pointer-events: none;
+}
+
+.hero-summary,
+.story-board,
+.process-track,
+.virus-section,
+.review-card,
+.concept-grid > .card,
+.review-grid > .card {
+  padding: 26px;
+}
+
+.hero-summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(42, 140, 130, 0.14), transparent 38%),
+    var(--panel);
+}
+
+.summary-chain {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--berry);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.summary-list {
+  padding-left: 20px;
+  margin: 0;
+  color: var(--muted);
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.primary-button,
+.secondary-button,
+.story-step,
+.phase-tab,
+.virus-button,
+.quiz-option,
+.challenge-option {
+  border-radius: 999px;
+  padding: 12px 18px;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(42, 140, 130, 0.24);
+}
+
+.secondary-button {
+  background: rgba(30, 45, 52, 0.08);
+  color: var(--ink);
+}
+
+.story-step,
+.phase-tab,
+.virus-button,
+.quiz-option,
+.challenge-option {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--ink);
+  border: 1px solid rgba(31, 58, 67, 0.08);
+}
+
+.story-step.active,
+.phase-tab.active,
+.virus-button.active {
+  background: var(--ink);
+  color: #fff;
+}
+
+.story-board,
+.process-track,
+.virus-section,
+.review-grid,
+.concept-grid {
+  margin-top: 28px;
+}
+
+.section-heading {
+  margin-bottom: 20px;
+}
+
+.section-heading p:last-child {
+  color: var(--muted);
+  max-width: 68ch;
+}
+
+.story-layout {
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  align-items: start;
+}
+
+.cell-stage {
+  position: relative;
+  min-height: 470px;
+  border-radius: 28px;
+  padding: 22px;
+  background:
+    linear-gradient(90deg, rgba(246, 214, 157, 0.32) 0%, rgba(246, 214, 157, 0.32) 50%, rgba(42, 140, 130, 0.18) 50%, rgba(42, 140, 130, 0.18) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.25));
+  border: 1px solid rgba(31, 58, 67, 0.08);
+}
+
+.cell-stage::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: rgba(31, 58, 67, 0.08);
+}
+
+.nucleus,
+.cytoplasm {
+  position: absolute;
+  inset: 22px auto 22px 22px;
+  width: calc(50% - 33px);
+  border-radius: 22px;
+}
+
+.cytoplasm {
+  left: auto;
+  right: 22px;
+}
+
+.nucleus-label,
+.cytoplasm-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.dna-helix {
+  position: absolute;
+  top: 70px;
+  left: 16px;
+  width: 150px;
+  height: 250px;
+}
+
+.dna-helix span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18px;
+}
+
+.dna-helix span::before,
+.dna-helix span::after {
+  content: "";
+  position: absolute;
+  width: 52px;
+  height: 10px;
+  border-radius: 999px;
+  top: 4px;
+}
+
+.dna-helix span::before {
+  left: 18px;
+  background: linear-gradient(90deg, var(--berry), rgba(143, 75, 122, 0.28));
+  transform-origin: left center;
+  animation: sway-left 4s ease-in-out infinite;
+}
+
+.dna-helix span::after {
+  right: 18px;
+  background: linear-gradient(90deg, rgba(42, 140, 130, 0.25), var(--teal));
+  transform-origin: right center;
+  animation: sway-right 4s ease-in-out infinite;
+}
+
+.dna-helix span:nth-child(1) { top: 0; }
+.dna-helix span:nth-child(2) { top: 32px; }
+.dna-helix span:nth-child(3) { top: 64px; }
+.dna-helix span:nth-child(4) { top: 96px; }
+.dna-helix span:nth-child(5) { top: 128px; }
+.dna-helix span:nth-child(6) { top: 160px; }
+.dna-helix span:nth-child(7) { top: 192px; }
+.dna-helix span:nth-child(8) { top: 224px; }
+
+.polymerase,
+.phase-enzyme {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: 120px;
+  min-height: 54px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--coral), #d45a3b);
+  color: #fff;
+  font-size: 0.9rem;
+  box-shadow: 0 10px 24px rgba(210, 90, 59, 0.25);
+}
+
+.polymerase {
+  top: 132px;
+  left: 122px;
+  opacity: 0;
+  transform: scale(0.88);
+}
+
+.pre-mrna,
+.processed-mrna {
+  position: absolute;
+  left: 104px;
+  right: 16px;
+  min-height: 72px;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.pre-mrna {
+  top: 244px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pre-mrna span,
+.mrna-body span,
+.phase-rna::before,
+.phase-rna::after {
+  display: inline-block;
+  width: 42px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold), #f7d58f);
+}
+
+.processed-mrna {
+  top: 316px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cap,
+.tail {
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  font-size: 0.84rem;
+}
+
+.mrna-body {
+  display: flex;
+  gap: 8px;
+}
+
+.retro-panel {
+  position: absolute;
+  inset: 80px 20px 48px 20px;
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.virus-core,
+.virus-dna,
+.retro-arrow,
+.protein-card {
+  border-radius: 20px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 12px 26px rgba(31, 58, 67, 0.12);
+}
+
+.retro-arrow {
+  background: linear-gradient(135deg, var(--berry), #6f355e);
+  color: #fff;
+}
+
+.ribosome {
+  position: absolute;
+  top: 148px;
+  left: 50%;
+  width: 220px;
+  transform: translateX(-50%) scale(0.9);
+  opacity: 0;
+}
+
+.ribosome-top,
+.ribosome-bottom {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #d3e7e4, #a6cbc5);
+}
+
+.ribosome-top {
+  height: 72px;
+  margin: 0 24px -6px;
+}
+
+.ribosome-slot {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  text-align: center;
+  border-radius: 18px;
+  background: rgba(255, 251, 244, 0.92);
+}
+
+.ribosome-bottom {
+  height: 88px;
+  margin-top: -6px;
+}
+
+.protein-chain {
+  position: absolute;
+  bottom: 116px;
+  left: 42px;
+  display: flex;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(-18px);
+}
+
+.protein-chain span {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--coral), var(--gold));
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+.protein-chain span:nth-child(2) { animation-delay: 120ms; }
+.protein-chain span:nth-child(3) { animation-delay: 240ms; }
+.protein-chain span:nth-child(4) { animation-delay: 360ms; }
+.protein-chain span:nth-child(5) { animation-delay: 480ms; }
+
+.protein-card {
+  position: absolute;
+  right: 28px;
+  bottom: 36px;
+  opacity: 0;
+  transform: scale(0.9);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(243, 178, 76, 0.32));
+}
+
+.cell-stage[data-scene="1"] .polymerase,
+.cell-stage[data-scene="2"] .polymerase,
+.cell-stage[data-scene="3"] .polymerase,
+.cell-stage[data-scene="4"] .polymerase {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cell-stage[data-scene="1"] .polymerase {
+  animation: polymerase-run 4s linear infinite;
+}
+
+.cell-stage[data-scene="1"] .pre-mrna,
+.cell-stage[data-scene="2"] .pre-mrna {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cell-stage[data-scene="2"] .processed-mrna,
+.cell-stage[data-scene="3"] .processed-mrna,
+.cell-stage[data-scene="4"] .processed-mrna {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cell-stage[data-scene="3"] .ribosome,
+.cell-stage[data-scene="4"] .ribosome {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.cell-stage[data-scene="3"] .protein-chain,
+.cell-stage[data-scene="4"] .protein-chain {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.cell-stage[data-scene="4"] .protein-card {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cell-stage[data-scene="5"] .retro-panel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.story-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 10px 4px;
+}
+
+.concept-badge {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(31, 58, 67, 0.08);
+  font-size: 0.92rem;
+}
+
+.story-facts,
+.bullet-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.fact-chip,
+.bullet-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(31, 58, 67, 0.06);
+}
+
+.concept-grid,
+.review-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lab-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+  align-items: start;
+}
+
+.field {
+  display: grid;
+  gap: 10px;
+}
+
+.field span {
+  font-weight: 600;
+}
+
+textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(31, 58, 67, 0.1);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  font: inherit;
+}
+
+.lab-output {
+  display: grid;
+  gap: 14px;
+}
+
+.output-card {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.sequence,
+#protein-output {
+  font-family: "Courier New", monospace;
+  font-size: 1.08rem;
+  word-break: break-word;
+}
+
+.token-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.token {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(42, 140, 130, 0.14);
+  font-family: "Courier New", monospace;
+}
+
+.quick-notes span {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(242, 123, 89, 0.12);
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+
+.challenge {
+  display: grid;
+  gap: 16px;
+}
+
+.challenge-question {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.challenge-options {
+  display: grid;
+  gap: 10px;
+}
+
+.challenge-feedback {
+  min-height: 48px;
+  color: var(--muted);
+}
+
+.challenge-option.correct,
+.quiz-option.correct {
+  background: rgba(42, 140, 130, 0.16);
+  color: var(--teal-dark);
+}
+
+.challenge-option.wrong,
+.quiz-option.wrong {
+  background: rgba(242, 123, 89, 0.16);
+  color: #8a3b22;
+}
+
+.phase-tabs {
+  margin-bottom: 22px;
+}
+
+.phase-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+  align-items: center;
+}
+
+.phase-visual {
+  position: relative;
+  min-height: 330px;
+  border-radius: 24px;
+  border: 1px solid rgba(31, 58, 67, 0.08);
+  background:
+    radial-gradient(circle at top left, rgba(243, 178, 76, 0.24), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48));
+  overflow: hidden;
+}
+
+.promoter-tag,
+.phase-stop {
+  position: absolute;
+  left: 18px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 0.88rem;
+}
+
+.promoter-tag {
+  top: 18px;
+}
+
+.phase-stop {
+  left: auto;
+  right: 18px;
+  bottom: 18px;
+}
+
+.phase-dna {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 112px;
+  display: grid;
+  gap: 16px;
+}
+
+.phase-dna span {
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(143, 75, 122, 0.8), rgba(42, 140, 130, 0.8));
+}
+
+.phase-bubble {
+  position: absolute;
+  top: 92px;
+  left: 70px;
+  width: 110px;
+  height: 82px;
+  border-radius: 48px;
+  background: rgba(255, 250, 240, 0.76);
+  border: 2px dashed rgba(31, 58, 67, 0.18);
+}
+
+.phase-enzyme {
+  top: 58px;
+  left: 40px;
+}
+
+.phase-rna {
+  position: absolute;
+  left: 100px;
+  bottom: 78px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.84);
+  opacity: 0.88;
+}
+
+.phase-rna::before,
+.phase-rna::after {
+  content: "";
+  margin-left: 10px;
+}
+
+.phase-visual[data-phase="initiation"] .phase-enzyme {
+  animation: nudge 2.4s ease-in-out infinite;
+}
+
+.phase-visual[data-phase="elongation"] .phase-enzyme {
+  animation: phase-run 4s linear infinite;
+}
+
+.phase-visual[data-phase="elongation"] .phase-rna {
+  animation: grow-rna 2.2s ease-in-out infinite alternate;
+}
+
+.phase-visual[data-phase="termination"] .phase-stop {
+  animation: glow 1.4s ease-in-out infinite alternate;
+}
+
+.phase-visual[data-phase="termination"] .phase-enzyme {
+  left: calc(100% - 210px);
+}
+
+.phase-copy p {
+  color: var(--muted);
+}
+
+.virus-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 146px;
+  margin-top: 18px;
+  padding: 20px;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.4)),
+    radial-gradient(circle at 20% 20%, rgba(42, 140, 130, 0.12), transparent 22%);
+}
+
+.flow-pill {
+  min-width: 110px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 12px 24px rgba(31, 58, 67, 0.08);
+  font-weight: 700;
+}
+
+.flow-arrow {
+  font-size: 1.5rem;
+  color: var(--berry);
+}
+
+.mini-sheet {
+  display: grid;
+  gap: 12px;
+}
+
+.sheet-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.sheet-label {
+  font-weight: 700;
+}
+
+.quiz-meta {
+  justify-content: space-between;
+  margin-top: 12px;
+  color: var(--muted);
+}
+
+#restart-quiz {
+  margin-top: 14px;
+}
+
+@keyframes sway-left {
+  0%, 100% { transform: rotate(20deg); }
+  50% { transform: rotate(-20deg); }
+}
+
+@keyframes sway-right {
+  0%, 100% { transform: rotate(-20deg); }
+  50% { transform: rotate(20deg); }
+}
+
+@keyframes polymerase-run {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(24px, 0) scale(1.02); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.95); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes phase-run {
+  0% { left: 40px; }
+  100% { left: calc(100% - 210px); }
+}
+
+@keyframes grow-rna {
+  from { transform: scaleX(0.8); transform-origin: left center; }
+  to { transform: scaleX(1.12); transform-origin: left center; }
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 0 rgba(242, 123, 89, 0); }
+  to { box-shadow: 0 0 0 14px rgba(242, 123, 89, 0.12); }
+}
+
+@media (max-width: 980px) {
+  .hero,
+  .concept-grid,
+  .review-grid,
+  .story-layout,
+  .phase-layout,
+  .lab-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cell-stage {
+    min-height: 520px;
+  }
+
+  .sheet-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    width: min(100% - 20px, 1200px);
+    padding-top: 18px;
+  }
+
+  .hero-summary,
+  .story-board,
+  .process-track,
+  .virus-section,
+  .review-card,
+  .concept-grid > .card,
+  .review-grid > .card {
+    padding: 20px;
+  }
+
+  .cell-stage {
+    min-height: 660px;
+    background:
+      linear-gradient(180deg, rgba(246, 214, 157, 0.32) 0%, rgba(246, 214, 157, 0.32) 48%, rgba(42, 140, 130, 0.18) 48%, rgba(42, 140, 130, 0.18) 100%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.25));
+  }
+
+  .cell-stage::after {
+    top: calc(50% - 1px);
+    bottom: auto;
+    left: 22px;
+    right: 22px;
+    width: auto;
+    height: 2px;
+  }
+
+  .nucleus,
+  .cytoplasm {
+    width: auto;
+    left: 22px;
+    right: 22px;
+    height: calc(50% - 33px);
+  }
+
+  .cytoplasm {
+    top: auto;
+    bottom: 22px;
+  }
+
+  .ribosome {
+    width: 200px;
+  }
+
+  .virus-visual {
+    flex-direction: column;
+  }
+}

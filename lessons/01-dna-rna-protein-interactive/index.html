@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DNA zu Protein - Interaktive Lernreise</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Interaktive Biologie-Wiederholung</p>
+          <h1>Wie kommt die Information aus einem Gen zu einem Protein?</h1>
+          <p class="hero-text">
+            Diese Seite fuehrt dich als roter Faden durch den ganzen Ablauf:
+            vom DNA-Archiv im Zellkern ueber Transkription und RNA-Prozessierung
+            bis zur Translation am Ribosom. Jeder Schritt ist klickbar,
+            animiert und mit einem Lernanker verbunden.
+          </p>
+          <div class="hero-actions">
+            <button id="start-story" class="primary-button" type="button">
+              Lernreise starten
+            </button>
+            <button id="jump-quiz" class="secondary-button" type="button">
+              Direkt zur Wiederholung
+            </button>
+          </div>
+        </div>
+        <div class="hero-summary card">
+          <h2>Merksatz</h2>
+          <p class="summary-chain">DNA -> RNA -> Protein</p>
+          <ul class="summary-list">
+            <li>DNA ist der Speicher.</li>
+            <li>mRNA ist die Arbeitskopie.</li>
+            <li>Protein uebernimmt die Funktion.</li>
+          </ul>
+        </div>
+      </header>
+
+      <main>
+        <section class="story-board card" id="story-board">
+          <div class="section-heading">
+            <p class="section-label">1. Gesamtbild</p>
+            <h2>Die ganze Lernkette auf einer Buehne</h2>
+            <p>
+              Klicke die Schritte nacheinander durch. Die Szene zeigt dir,
+              wo der Prozess stattfindet und was dabei gerade passiert.
+            </p>
+          </div>
+
+          <div class="story-controls" id="story-controls">
+            <button class="story-step active" data-step="0" type="button">
+              1 DNA
+            </button>
+            <button class="story-step" data-step="1" type="button">
+              2 Transkription
+            </button>
+            <button class="story-step" data-step="2" type="button">
+              3 Prozessierung
+            </button>
+            <button class="story-step" data-step="3" type="button">
+              4 Translation
+            </button>
+            <button class="story-step" data-step="4" type="button">
+              5 Protein
+            </button>
+            <button class="story-step" data-step="5" type="button">
+              6 Retrovirus
+            </button>
+          </div>
+
+          <div class="story-layout">
+            <div class="cell-stage" id="cell-stage" data-scene="0">
+              <div class="nucleus">
+                <div class="nucleus-label">Zellkern</div>
+                <div class="dna-helix" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="polymerase" aria-hidden="true">RNA-Polymerase</div>
+                <div class="pre-mrna" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="processed-mrna" aria-hidden="true">
+                  <div class="cap">5' Cap</div>
+                  <div class="mrna-body">
+                    <span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="tail">Poly-A</div>
+                </div>
+                <div class="retro-panel" aria-hidden="true">
+                  <div class="virus-core">Virus-RNA</div>
+                  <div class="retro-arrow">Reverse Transkriptase</div>
+                  <div class="virus-dna">virale DNA</div>
+                </div>
+              </div>
+              <div class="cytoplasm">
+                <div class="cytoplasm-label">Cytoplasma</div>
+                <div class="ribosome" aria-hidden="true">
+                  <div class="ribosome-top"></div>
+                  <div class="ribosome-slot">Codons werden gelesen</div>
+                  <div class="ribosome-bottom"></div>
+                </div>
+                <div class="protein-chain" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="protein-card" aria-hidden="true">
+                  Aktives Protein
+                </div>
+              </div>
+            </div>
+
+            <div class="story-panel">
+              <div class="story-meta">
+                <p class="section-label" id="step-kicker">Schritt 1</p>
+                <h3 id="step-title">DNA als geschuetztes Archiv</h3>
+              </div>
+              <p id="step-text">
+                Das Gen liegt als Abschnitt der DNA im Zellkern. Die DNA
+                speichert die Information langfristig und bleibt deshalb bei
+                Eukaryoten im Zellkern geschuetzt.
+              </p>
+              <div class="concept-strip">
+                <div class="concept-badge" id="concept-place">Ort: Zellkern</div>
+                <div class="concept-badge" id="concept-enzyme">Enzym: noch keines</div>
+                <div class="concept-badge" id="concept-direction">
+                  Richtung: Speicherphase
+                </div>
+              </div>
+              <div class="story-facts" id="story-facts"></div>
+              <div class="story-nav">
+                <button id="prev-step" class="secondary-button" type="button">
+                  Zurueck
+                </button>
+                <button id="next-step" class="primary-button" type="button">
+                  Weiter
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="concept-grid">
+          <article class="card">
+            <div class="section-heading">
+              <p class="section-label">2. DNA und RNA verstehen</p>
+              <h2>Basenpaarung direkt ausprobieren</h2>
+              <p>
+                Gib einen DNA-Matrizenstrang in 3' -> 5' Richtung ein. Die
+                Seite zeigt dir sofort die passende RNA in 5' -> 3' Richtung.
+              </p>
+            </div>
+
+            <div class="lab-grid">
+              <label class="field">
+                <span>DNA-Matrizenstrang</span>
+                <textarea id="dna-input" rows="3">TACTTACCGGAACTT</textarea>
+              </label>
+              <div class="lab-output">
+                <div class="output-card">
+                  <p class="mini-label">RNA-Abschrift</p>
+                  <p class="sequence" id="rna-output">AUGAAUGGCCUUGAA</p>
+                </div>
+                <div class="output-card">
+                  <p class="mini-label">Codons</p>
+                  <div class="token-row" id="codon-output"></div>
+                </div>
+                <div class="output-card">
+                  <p class="mini-label">Protein-Vorschau</p>
+                  <p id="protein-output">
+                    Met - Asn - Gly - Leu - Glu
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="quick-notes">
+              <span>DNA: A-T, G-C</span>
+              <span>RNA: A-U, G-C</span>
+              <span>RNA ist meist einzelstraengig</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="section-heading">
+              <p class="section-label">3. Pruefungsfalle</p>
+              <h2>Welche Richtung ist richtig?</h2>
+              <p>
+                Waehle bei jeder Aussage die korrekte Option. So trainierst du
+                die typischen Stellen, bei denen man in Tests schnell stolpert.
+              </p>
+            </div>
+
+            <div class="challenge" id="direction-challenge">
+              <p class="challenge-question" id="challenge-question"></p>
+              <div class="challenge-options" id="challenge-options"></div>
+              <p class="challenge-feedback" id="challenge-feedback"></p>
+              <button id="next-challenge" class="secondary-button" type="button">
+                Naechste Aussage
+              </button>
+            </div>
+          </article>
+        </section>
+
+        <section class="process-track card">
+          <div class="section-heading">
+            <p class="section-label">4. Vom Gen zur fertigen mRNA</p>
+            <h2>Die Transkription in drei Phasen</h2>
+            <p>
+              Initiation, Elongation und Termination bauen logisch aufeinander
+              auf. Waehle eine Phase und beobachte, was dabei in der Zelle
+              geschieht.
+            </p>
+          </div>
+
+          <div class="phase-tabs" id="phase-tabs">
+            <button class="phase-tab active" data-phase="initiation" type="button">
+              Initiation
+            </button>
+            <button class="phase-tab" data-phase="elongation" type="button">
+              Elongation
+            </button>
+            <button class="phase-tab" data-phase="termination" type="button">
+              Termination
+            </button>
+          </div>
+
+          <div class="phase-layout">
+            <div class="phase-visual" id="phase-visual" data-phase="initiation">
+              <div class="promoter-tag">Promotor / TATA-Box</div>
+              <div class="phase-dna">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div class="phase-bubble"></div>
+              <div class="phase-enzyme">RNA-Polymerase</div>
+              <div class="phase-rna">Prae-mRNA</div>
+              <div class="phase-stop">AAUAAA / Prozessierungssignal</div>
+            </div>
+            <div class="phase-copy">
+              <h3 id="phase-title">Initiation: Start am Promotor</h3>
+              <p id="phase-text">
+                Die RNA-Polymerase bindet mit Hilfe von
+                Transkriptionsfaktoren an den Promotor. Die DNA oeffnet sich
+                lokal, damit die Synthese beginnen kann.
+              </p>
+              <div class="bullet-panel" id="phase-bullets"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="virus-section card">
+          <div class="section-heading">
+            <p class="section-label">5. Sonderfaelle sauber verstehen</p>
+            <h2>Normalfall, RNA-Virus oder Retrovirus?</h2>
+            <p>
+              Hier siehst du, was gleich bleibt und was sich aendert. Gerade
+              beim Retrovirus ist der Richtungswechsel entscheidend.
+            </p>
+          </div>
+
+          <div class="virus-switch" id="virus-switch">
+            <button class="virus-button active" data-mode="normal" type="button">
+              Menschliche Zelle
+            </button>
+            <button class="virus-button" data-mode="rna" type="button">
+              RNA-Virus
+            </button>
+            <button class="virus-button" data-mode="retro" type="button">
+              Retrovirus
+            </button>
+          </div>
+
+          <div class="virus-visual" id="virus-visual" data-mode="normal">
+            <div class="flow-pill">DNA</div>
+            <div class="flow-arrow" id="virus-arrow-a">-></div>
+            <div class="flow-pill">RNA</div>
+            <div class="flow-arrow" id="virus-arrow-b">-></div>
+            <div class="flow-pill">Protein</div>
+          </div>
+
+          <div class="virus-copy">
+            <h3 id="virus-title">Normalfall in einer Koerperzelle</h3>
+            <p id="virus-text">
+              Das Gen liegt auf DNA. Zuerst entsteht RNA durch Transkription,
+              danach wird am Ribosom ein Protein gebildet.
+            </p>
+            <div class="bullet-panel" id="virus-points"></div>
+          </div>
+        </section>
+
+        <section class="review-grid">
+          <article class="card review-card" id="review-card">
+            <div class="section-heading">
+              <p class="section-label">6. Wiederholung</p>
+              <h2>Selbsttest mit Sofort-Feedback</h2>
+              <p>
+                Beantworte die Fragen, um zu pruefen, ob der rote Faden sitzt.
+              </p>
+            </div>
+            <p class="challenge-question" id="quiz-question"></p>
+            <div class="challenge-options" id="quiz-options"></div>
+            <p class="challenge-feedback" id="quiz-feedback"></p>
+            <div class="quiz-meta">
+              <span id="quiz-progress">Frage 1 von 5</span>
+              <span id="quiz-score">Punkte: 0</span>
+            </div>
+            <button id="restart-quiz" class="secondary-button" type="button">
+              Quiz neu starten
+            </button>
+          </article>
+
+          <article class="card">
+            <div class="section-heading">
+              <p class="section-label">7. Ultrakurz</p>
+              <h2>Mini-Lernzettel fuer die letzte Runde</h2>
+            </div>
+            <div class="mini-sheet">
+              <div class="sheet-row">
+                <span class="sheet-label">DNA</span>
+                <span>Speicher der Erbinformation</span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-label">mRNA</span>
+                <span>Arbeitskopie fuer das Ribosom</span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-label">Transkription</span>
+                <span>DNA -> Prae-mRNA</span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-label">Prozessierung</span>
+                <span>5' Cap, Poly-A, Spleissen</span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-label">Translation</span>
+                <span>mRNA -> Aminosaeurekette</span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-label">Retrovirus</span>
+                <span>RNA -> DNA durch reverse Transkriptase</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
