@@ -172,3 +172,6 @@ For this mechatronics lesson, the right format was not a terminal drill and not 
 - engineering calculators
 
 So this lesson acts as a hybrid of explainer, simulator and revision tool.
+
+# Feedback:
+this was wayyy to short for me personally, not interactive enough, nice idea but not a good implementation. I asked it to overwork this one again. Let's see🚢.
