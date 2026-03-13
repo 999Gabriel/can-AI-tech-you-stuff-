@@ -25,6 +25,7 @@ Current lessons:
 
 1. [DNA, RNA, Protein: Interactive Central Dogma Lesson](./lessons/01-dna-rna-protein-interactive/README.md)
 2. [Gerund vs Infinitive: Terminal Grammar Coach](./lessons/02-gerund-infinitive-terminal-coach/README.md)
+3. [Applied Mechatronics: Interactive Systems Lab](./lessons/03-applied-mechatronics-lab/README.md)
 
 ## Lesson Design Principle
 
