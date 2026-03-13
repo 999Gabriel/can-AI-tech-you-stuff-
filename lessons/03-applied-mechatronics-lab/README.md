@@ -2,7 +2,12 @@
 
 ## What This Lesson Teaches
 
-This lesson teaches the core conceptual chain behind a large mechatronics block:
+This lesson now teaches the mechatronics block in two layers at once:
+
+- a dense conceptual atlas for breadth
+- a guided systems lab for active practice
+
+It covers:
 
 - charge, current, voltage, power
 - real voltage sources and internal resistance
@@ -11,13 +16,14 @@ This lesson teaches the core conceptual chain behind a large mechatronics block:
 - diodes, LEDs, Zener diodes, freewheel diodes
 - lead resistance and four-wire measurement
 - operational amplifier basics
-- comparator, hysteresis, inverting amplifier, voltage follower
+- comparator, hysteresis, inverting amplifier, non-inverting amplifier
+- voltage follower, difference amplifier, integrator and peak detector
 - capacitors, dielectric materials, field quantities and geometry effects
 - magnetic field basics, coils and transformer ratio
 - control vs regulation
 - SPS scan cycle
 
-The goal is not to present these as isolated chapters. The lesson is built to show how they connect:
+The goal is not to present these as isolated chapters. The lesson is built to show how they connect in actual engineering workflows:
 
 - moving charge leads to current
 - separated charge leads to voltage
@@ -37,7 +43,7 @@ Students often know fragments like:
 
 but cannot explain **why** these statements are true or how they relate.
 
-So this lesson is built as a **multi-module interactive web lab**.
+So this lesson is built as a **multi-module interactive web lab with a guided circuit builder**.
 
 That format is the right fit here because the topic needs:
 
@@ -52,9 +58,9 @@ That format is the right fit here because the topic needs:
 The site is structured in a strict sequence from physics foundation to engineering application:
 
 1. Fundamental electrical quantities
-2. Material behavior and band picture
-3. Nonlinear semiconductor devices and protection circuits
-4. Measurement and analog signal conditioning
+2. Interactive circuit construction tasks
+3. OPV analysis in linear and switching operation
+4. Material behavior and band picture
 5. Energy storage, fields, magnetics
 6. Control theory and PLC logic
 
@@ -62,65 +68,63 @@ This matters because later engineering topics are only understandable when the e
 
 ## How The Website Teaches
 
-### 1. Interactive quantity lab
+### 1. Concept atlas first
 
-The first module lets the learner directly vary:
+The lesson now opens with a dense concept atlas instead of dropping straight into one widget.
 
-- number of charge carriers
-- time
-- work
-- charge
-- source resistance
-- load resistance
+That matters because this subject is broad. The learner needs a map of the whole system before drilling individual circuits.
 
-This turns definitions like `I = dQ/dt` and `U = dW/dQ` into manipulable relationships instead of abstract formulas.
+### 2. Guided circuit builder
 
-### 2. Dual representation for materials
+The lesson now includes three explicit build tasks:
 
-The lesson teaches conductor, semiconductor and insulator behavior with:
+- safe LED circuit
+- relay / coil protection with flywheel diode
+- pull-up input wiring
 
-- a simplified potential-well picture
-- a simplified band-structure picture
+The learner does not only read the rule. They place components into the circuit, simulate the result and see whether current flows correctly, dangerously or not at all.
 
-This is important because students often see these as separate topics even though they describe the same physics at different levels.
+This directly targets a common weakness in technical classes:
+students can often repeat the rule, but cannot translate it into a working schematic.
 
-### 3. Practice-oriented diode bench
+### 3. Expanded OPV studio
 
-The diode module is not only about theory:
+The previous version was too shallow on OPVs. The revised lesson now separates:
 
-- LED resistor calculation
-- Zener clamping
-- freewheel diode behavior during switch-off
+- topology bench for static transfer behavior
+- dynamic bench for time-dependent behavior
 
-That mirrors real workshop and Arduino practice, where the main learning value lies in understanding failure prevention.
+Interactive topology modes:
 
-### 4. Measurement + OPV bridge
+- comparator
+- inverting amplifier
+- non-inverting amplifier
+- voltage follower
+- difference amplifier
 
-The lesson deliberately places four-wire measurement and OPV concepts near each other because both are really about:
+Interactive dynamic modes:
 
-- not disturbing the measured system
-- separating a source from a load
-- controlling what current flows where
+- Schmitt trigger
+- integrator
+- peak detector
 
-This builds a more coherent mental model than teaching them as unrelated topics.
+That gives the learner both the static formulas and the dynamic system intuition.
 
-### 5. Capacitor and field reasoning
+### 4. Field, material and measurement bridge
 
-The capacitor module links:
+The field lab reconnects formulas to physical meaning:
 
-- geometry
-- dielectric material
-- capacitance
-- stored charge
-- field strength
-- electric flux density
+- Q, I, U, P
+- real sources with internal resistance
+- band picture and doting logic
+- capacitor geometry and dielectric influence
+- magnetic field strength and transformer ratio
+- two-wire vs four-wire measurement
+- Zener voltage limiting
 
-and then tests the classic understanding trap:
+This section is deliberately broad so the learner can move back from component tricks to the physics underneath them.
 
-- connected to source -> `U` stays constant
-- disconnected -> `Q` stays constant
-
-### 6. Automation with visible feedback
+### 5. Automation with visible feedback
 
 The final module makes the open-loop vs closed-loop distinction visible through a simple room-temperature simulation and then ties that to the SPS scan-cycle logic.
 
@@ -134,7 +138,8 @@ Where simplifications are used, they are marked clearly:
 
 - material band pictures are qualitative, not full solid-state calculations
 - the coil field display uses relative values because full geometry is not parameterized
-- the Zener display shows the regulating effect conceptually, not a detailed datasheet curve
+- the circuit builder is a guided topology trainer, not a free SPICE-equivalent simulator
+- the dynamic OPV plots are didactic response models, not vendor-accurate transient simulations
 
 The simplification level is chosen to preserve the physics while keeping the lesson interactive and readable.
 
@@ -142,7 +147,7 @@ The simplification level is chosen to preserve the physics while keeping the les
 
 - [index.html](./index.html): structure and learning flow
 - [styles.css](./styles.css): visual system, diagram styling, layout and motion
-- [script.js](./script.js): calculators, simulations, charts and quiz logic
+- [script.js](./script.js): circuit-builder logic, OPV studio, calculators, charts and quiz logic
 
 ## How To Use
 
@@ -150,13 +155,11 @@ Open [index.html](./index.html) in a browser.
 
 Recommended study path:
 
-1. Work through the modules in order once
-2. Then revisit only the weak spots:
-   - LED / freewheel diode
-   - OPV modes
-   - capacitor connected vs isolated
-   - control vs regulation
-3. Finish with the final quick check
+1. Read the concept atlas once for the big picture.
+2. Solve the three circuit-building tasks.
+3. Spend the most time in the OPV studio.
+4. Use the field lab to reconnect formulas with physical meaning.
+5. Finish with the final quick check.
 
 ## Why This Fits The Repo Thesis
 
@@ -169,9 +172,26 @@ For this mechatronics lesson, the right format was not a terminal drill and not 
 - visual spatial models
 - parameter-based interaction
 - charts and state changes
+- circuit-construction tasks
 - engineering calculators
+- static and dynamic OPV views
 
+<<<<<<< HEAD
 So this lesson acts as a hybrid of explainer, simulator and revision tool.
 
 # Feedback:
 this was wayyy to short for me personally, not interactive enough, nice idea but not a good implementation. I asked it to overwork this one again. Let's see🚢.
+=======
+So this lesson now acts as a hybrid of explainer, guided builder, simulator and revision tool.
+
+## Revision Context
+
+This version replaces an earlier shorter attempt after direct feedback that the mechatronics lesson needed:
+
+- more topic coverage
+- more interactivity
+- a cleaner design
+- a much deeper OPV treatment
+
+The current version is the result of that revision.
+>>>>>>> f914faa (Overhaul mechatronics lesson with circuit builder)

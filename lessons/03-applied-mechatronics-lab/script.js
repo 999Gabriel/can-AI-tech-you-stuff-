@@ -1,647 +1,1126 @@
+const $ = (id) => document.getElementById(id);
+
 const materialContent = {
   conductor: {
-    title: "Leiter: freie Elektronen zwischen den Atomen",
+    title: "Leiter",
     copy:
-      "Bei Leitern sinken die Potentialwaende zwischen vielen Atomen so weit ab, dass Valenzelektronen praktisch frei beweglich werden. Im Bandbild ueberlappen zugaengliche Bereiche stark.",
-    level: 150,
-    gap: 6,
-    conductivity: (temp) => `${Math.max(70, 92 - temp * 0.15).toFixed(0)} % (bei Metallen sinkt Leitfaehigkeit mit T eher leicht)`,
-    bandSummary: "Valenz- und Leitungsband praktisch ueberlappend"
+      "Bei Leitern stehen leicht bewegliche Elektronen zur Verfuegung. Im Bandbild sind zugaengliche Zustaende praktisch ohne relevante Luecke vorhanden.",
+    summary: "Valenz- und Leitungsband praktisch ueberlappend",
+    conductivity: (temp) => `${Math.max(70, 92 - temp * 0.15).toFixed(0)} % hoch`
   },
   semiconductor: {
-    title: "Halbleiter: kleine Bandluecke, stark temperaturabhaengig",
+    title: "Halbleiter",
     copy:
-      "Halbleiter liegen zwischen Leiter und Isolator. Schon moderate thermische Anregung kann Elektronen ueber die kleine Bandluecke ins Leitungsband heben. Dotierung veraendert die Traegerdichte gezielt.",
-    level: 94,
-    gap: 38,
-    conductivity: (temp) => `${Math.min(100, 8 + temp * 0.9).toFixed(0)} % (nimmt mit Temperatur deutlich zu)`,
-    bandSummary: "kleine Bandluecke"
+      "Halbleiter besitzen eine kleine Bandluecke. Temperatur und Dotierung veraendern die Leitfaehigkeit stark.",
+    summary: "kleine Bandluecke, thermisch und durch Dotierung steuerbar",
+    conductivity: (temp) => `${Math.min(100, 8 + temp * 0.9).toFixed(0)} % steigend`
   },
   insulator: {
-    title: "Isolator: Elektronen tief gebunden",
+    title: "Isolator",
     copy:
-      "Beim Isolator sitzen Elektronen energetisch zu tief. Die Bandluecke ist gross, daher entstehen ohne extreme Felder oder Durchschlag kaum freie Ladungstraeger.",
-    level: 48,
-    gap: 78,
-    conductivity: () => "nahe 0 % (bis zum Durchschlag)",
-    bandSummary: "grosse Bandluecke"
+      "Isolatoren haben eine grosse Bandluecke. Freie Ladungstraeger fehlen, bis Felder so gross werden, dass Durchschlag auftritt.",
+    summary: "grosse Bandluecke, Leitung erst bei extremer Feldstaerke",
+    conductivity: () => "nahe 0 %"
   }
 };
 
 const dopingContent = {
   intrinsic: {
     title: "Reiner Halbleiter",
-    copy:
-      "Im intrinsischen Halbleiter entstehen Elektronen und Loecher paarweise. Keine Sorte ist deutlich dominant.",
-    electrons: 4,
-    holes: 4,
-    majority: "keine Dominanz",
-    hint: "Temperatur erzeugt Elektron-Loch-Paare"
+    copy: "Elektronen und Loecher entstehen paarweise. Keine Sorte dominiert deutlich.",
+    majority: "keine Dominanz"
   },
   n: {
     title: "n-Dotierung",
-    copy:
-      "Dotierung mit Elementen der 5. Hauptgruppe liefert ein zusaetzliches Elektron. Diese freien Elektronen werden Mehrheitstraeger.",
-    electrons: 8,
-    holes: 3,
-    majority: "Elektronen",
-    hint: "Grundlage fuer den n-Bereich einer Diode"
+    copy: "5. Hauptgruppe -> zusaetzliche freie Elektronen. Elektronen sind Mehrheitstraeger.",
+    majority: "Elektronen"
   },
   p: {
     title: "p-Dotierung",
-    copy:
-      "Dotierung mit Elementen der 3. Hauptgruppe erzeugt Elektronenmangelstellen. Diese Loecher wirken als bewegliche positive Ladungstraeger.",
-    electrons: 3,
-    holes: 8,
-    majority: "Loecher",
-    hint: "Grundlage fuer den p-Bereich einer Diode"
+    copy: "3. Hauptgruppe -> Elektronenmangelstellen. Loecher sind Mehrheitstraeger.",
+    majority: "Loecher"
   }
 };
 
-const opampModes = {
+const challengeData = {
+  led: {
+    title: "Baue eine sichere 5-V-LED-Schaltung",
+    copy:
+      "Setze Schalter, Vorwiderstand und LED in den seriellen Pfad. Danach schliesse den Schalter und pruefe, ob der LED-Strom sicher begrenzt ist.",
+    boardId: "board-led",
+    control: "led",
+    slots: {
+      switch: "switch",
+      series: "resistor",
+      load: "led"
+    }
+  },
+  coil: {
+    title: "Schuetze eine DC-Spule beim Abschalten",
+    copy:
+      "Baue Schalter, Spule und eine korrekt orientierte Freilaufdiode auf. Der schwierige Fall ist nicht das Einschalten, sondern das Abschalten.",
+    boardId: "board-coil",
+    control: "coil",
+    slots: {
+      switch: "switch",
+      load: "coil",
+      parallel: "diode"
+    }
+  },
+  pullup: {
+    title: "Stabilisiere einen Digitaleingang mit Pull-up",
+    copy:
+      "Lege einen Widerstand an VCC und einen Taster nach GND. Im offenen Zustand muss der Eingang stabil HIGH sein und beim Druecken LOW werden.",
+    boardId: "board-pullup",
+    control: "pullup",
+    slots: {
+      top: "resistor",
+      bottom: "pushbutton"
+    }
+  }
+};
+
+const slotConfig = {
+  led: {
+    switch: $("slot-led-switch"),
+    series: $("slot-led-series"),
+    load: $("slot-led-load")
+  },
+  coil: {
+    switch: $("slot-coil-switch"),
+    load: $("slot-coil-load"),
+    parallel: $("slot-coil-parallel")
+  },
+  pullup: {
+    top: $("slot-pullup-top"),
+    bottom: $("slot-pullup-bottom")
+  }
+};
+
+const wireGroups = {
+  led: ["led-wire-top-left", "led-wire-top-mid", "led-wire-top-right", "led-wire-down-right", "led-wire-bottom"],
+  coilMain: ["coil-wire-top-left", "coil-wire-top-mid", "coil-wire-top-right", "coil-wire-right", "coil-wire-bottom"],
+  coilBranch: ["coil-wire-branch-top", "coil-wire-branch-bottom"],
+  pullupTop: ["pullup-wire-top", "pullup-wire-node"],
+  pullupBottom: ["pullup-wire-bottom", "pullup-wire-node"]
+};
+
+const topologyModes = {
   comparator: {
     title: "Vergleicher ohne Gegenkopplung",
     copy:
-      "Wegen der enormen Leerlaufverstaerkung geht der OPV schon bei kleiner Differenz sehr schnell in die Saettigung. Er arbeitet dann praktisch als Schalter.",
-    note:
-      "Wenn U+ groesser als U- ist, zieht der Ausgang zur positiven Versorgung. Sonst zur negativen.",
-    solve(vin, vref) {
-      const output = vin >= vref ? 12 : -12;
+      "Schon kleinste Differenzen zwischen Eingang und Referenz schieben den Ausgang in die Saettigung. Der lineare Bereich ist praktisch winzig.",
+    evaluate(a, b) {
+      const out = a >= b ? 12 : -12;
       return {
-        output,
-        formula: `Vergleich: Vin ${vin >= vref ? ">=" : "<"} Vref`,
-        bar: Math.abs(output) / 12
+        out,
+        formula: `Wenn Vin ${a >= b ? ">=" : "<"} Vref, dann Uout -> ${out > 0 ? "+" : "-"}Saettigung`,
+        extra: "Typischer Einsatz: Schaltschwelle, Grenzwertdetektion, einfacher Reglervergleich."
       };
+    },
+    draw(ctx, width, height, a, b) {
+      drawAxes(ctx, width, height, "Vin", "Uout");
+      const scaleX = (v) => 40 + ((v + 10) / 20) * (width - 60);
+      const scaleY = (v) => height - 30 - ((v + 12) / 24) * (height - 50);
+      ctx.strokeStyle = "#111";
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(40, scaleY(-12));
+      ctx.lineTo(scaleX(b), scaleY(-12));
+      ctx.lineTo(scaleX(b), scaleY(12));
+      ctx.lineTo(width - 20, scaleY(12));
+      ctx.stroke();
+      drawPoint(ctx, scaleX(a), scaleY(a >= b ? 12 : -12));
     }
   },
   inverting: {
     title: "Invertierender Verstaerker",
     copy:
-      "Mit Gegenkopplung regelt sich der invertierende Eingang auf virtuelles Potential. Der Strom durch R1 ist gleich dem Strom durch R2, weil ideal kein Eingangsstrom fliesst.",
-    note:
-      "Kernformel: Uout = -(R2/R1) * Uin. Das Minuszeichen bedeutet Inversion.",
-    solve(vin, _vref, r1, r2) {
+      "Mit Gegenkopplung stellt sich am invertierenden Eingang ein virtuelles Potential ein. Das Widerstandsverhaeltnis bestimmt die Verstaerkung.",
+    evaluate(a, _b, r1, r2) {
       const gain = -(r2 / r1);
-      const unclamped = gain * vin;
-      const output = Math.max(-12, Math.min(12, unclamped));
+      const ideal = gain * a;
+      const out = clamp(ideal, -12, 12);
       return {
-        output,
-        formula: `Gain = ${gain.toFixed(2)} -> Uout = ${unclamped.toFixed(2)} V${Math.abs(unclamped) > 12 ? " (an Versorgung begrenzt)" : ""}`,
-        bar: Math.min(1, Math.abs(output) / 12)
+        out,
+        formula: `Uout = -(R2/R1) · Uin = ${gain.toFixed(2)} · ${a.toFixed(2)} V = ${ideal.toFixed(2)} V`,
+        extra: Math.abs(ideal) > 12 ? "Der ideale Ausgang waere ausserhalb der Versorgung und wird deshalb begrenzt." : "Minuszeichen bedeutet Phaseninversion."
       };
+    },
+    draw(ctx, width, height, a, _b, r1, r2) {
+      drawAxes(ctx, width, height, "Uin", "Uout");
+      const gain = -(r2 / r1);
+      drawTransferLine(ctx, width, height, (x) => clamp(gain * x, -12, 12), a);
+    }
+  },
+  noninverting: {
+    title: "Nichtinvertierender Verstaerker",
+    copy:
+      "Der Eingang liegt am nichtinvertierenden Eingang. Die Verstaerkung ist positiv und ergibt sich zu 1 + R2/R1.",
+    evaluate(a, _b, r1, r2) {
+      const gain = 1 + r2 / r1;
+      const ideal = gain * a;
+      const out = clamp(ideal, -12, 12);
+      return {
+        out,
+        formula: `Uout = (1 + R2/R1) · Uin = ${gain.toFixed(2)} · ${a.toFixed(2)} V = ${ideal.toFixed(2)} V`,
+        extra: "Kein Minuszeichen: Das Signal bleibt phasengleich."
+      };
+    },
+    draw(ctx, width, height, a, _b, r1, r2) {
+      drawAxes(ctx, width, height, "Uin", "Uout");
+      const gain = 1 + r2 / r1;
+      drawTransferLine(ctx, width, height, (x) => clamp(gain * x, -12, 12), a);
     }
   },
   follower: {
     title: "Spannungsfolger / Impedanzwandler",
     copy:
-      "Die Spannungsverstaerkung ist etwa 1. Der eigentliche Nutzen liegt im sehr hohen Eingangswiderstand und der Lastentkopplung.",
-    note:
-      "Der Sensor wird kaum belastet, der OPV stellt am Ausgang dieselbe Spannung mit deutlich besserer Treibfaehigkeit bereit.",
-    solve(vin) {
-      const output = Math.max(-12, Math.min(12, vin));
+      "Die Spannungsverstaerkung ist etwa 1. Der eigentliche Nutzen ist die Entkopplung: hohe Eingangsimpedanz, niedriger Ausgangswiderstand.",
+    evaluate(a, b) {
+      const out = clamp(a, -12, 12);
+      const sourceResistance = Math.max(1, b + 11);
+      const sourceCurrentmA = Math.abs(a / (sourceResistance * 1000)) * 1000;
       return {
-        output,
-        formula: `Uout ≈ Uin = ${output.toFixed(2)} V`,
-        bar: Math.min(1, Math.abs(output) / 12)
+        out,
+        formula: `Uout ≈ Uin = ${out.toFixed(2)} V`,
+        extra: `Beispielhafte Sensorbelastung bei ${sourceResistance.toFixed(1)} kOhm Quellwiderstand: nur ${sourceCurrentmA.toFixed(3)} mA.`
       };
+    },
+    draw(ctx, width, height, a) {
+      drawAxes(ctx, width, height, "Uin", "Uout");
+      drawTransferLine(ctx, width, height, (x) => clamp(x, -12, 12), a);
     }
   },
+  difference: {
+    title: "Differenzverstaerker",
+    copy:
+      "Der Ausgang bildet die Differenz zweier Eingangssignale, skaliert mit dem Widerstandsverhaeltnis. In der Praxis helfen oft vorgeschaltete Follower gegen hohe Quellenimpedanzen.",
+    evaluate(a, b, r1, r2) {
+      const gain = r2 / r1;
+      const ideal = gain * (b - a);
+      const out = clamp(ideal, -12, 12);
+      return {
+        out,
+        formula: `Uout = (R2/R1) · (V2 - V1) = ${gain.toFixed(2)} · (${b.toFixed(2)} - ${a.toFixed(2)}) = ${ideal.toFixed(2)} V`,
+        extra: "Diese Topologie ist empfindlicher gegen Quellenbelastung als ein reiner Follower."
+      };
+    },
+    draw(ctx, width, height, a, b, r1, r2) {
+      drawAxes(ctx, width, height, "Signale", "Spannung");
+      const gain = r2 / r1;
+      const out = clamp(gain * (b - a), -12, 12);
+      const scaleY = (v) => height - 30 - ((v + 12) / 24) * (height - 50);
+      const bars = [
+        { x: 90, value: a, label: "V1" },
+        { x: 190, value: b, label: "V2" },
+        { x: 290, value: out, label: "Uout" }
+      ];
+      bars.forEach((bar) => {
+        ctx.fillStyle = "#121212";
+        ctx.fillRect(bar.x, scaleY(Math.max(bar.value, 0)), 52, Math.abs(scaleY(bar.value) - scaleY(0)));
+        ctx.fillStyle = "rgba(18,18,18,0.72)";
+        ctx.fillText(bar.label, bar.x + 6, height - 8);
+      });
+    }
+  }
+};
+
+const dynamicModes = {
   schmitt: {
     title: "Schmitt-Trigger mit Hysterese",
     copy:
-      "Mitkopplung erzeugt zwei Schaltschwellen. Das verhindert Flackern bei verrauschten Signalen oder langsamen Uebergaengen.",
-    note:
-      "Zwischen unterer und oberer Schwelle haelt der Schmitt-Trigger seinen letzten Ausgangszustand.",
-    solve(vin, vref, r1, r2, state) {
-      const hysteresis = Math.max(0.2, r2 / 40);
-      const upper = vref + hysteresis / 2;
-      const lower = vref - hysteresis / 2;
-      let nextState = state;
-      if (vin >= upper) nextState = 12;
-      if (vin <= lower) nextState = -12;
+      "Mitkopplung erzeugt zwei Schaltschwellen. Das verhindert Flackern, wenn das Eingangssignal verrauscht oder langsam den Schwellwert durchlaeuft.",
+    render(amplitude, frequency, r, c) {
+      const hysteresis = c / 18;
+      const center = r / 20 - 2.5;
+      const upper = center + hysteresis / 2;
+      const lower = center - hysteresis / 2;
+      const input = [];
+      const output = [];
+      let state = -12;
+      for (let i = 0; i < 240; i += 1) {
+        const t = i / 239;
+        const value = center + Math.sin(t * Math.PI * 2 * frequency / 2) * amplitude + Math.sin(t * 55) * 0.15;
+        input.push(value);
+        if (value >= upper) state = 12;
+        if (value <= lower) state = -12;
+        output.push(state);
+      }
       return {
-        output: nextState,
-        state: nextState,
         formula: `untere Schwelle ${lower.toFixed(2)} V, obere Schwelle ${upper.toFixed(2)} V`,
-        bar: Math.min(1, Math.abs(nextState) / 12)
+        extra: "Im Zwischenbereich haelt das System den letzten Zustand.",
+        state: output.at(-1),
+        input,
+        output,
+        thresholds: [lower, upper]
+      };
+    }
+  },
+  integrator: {
+    title: "Integrator",
+    copy:
+      "Bei konstantem Eingangsstrom laedt oder entlaedt sich der Rueckkopplungskondensator linear. Ein Rechtecksignal wird dadurch zu einer Rampe.",
+    render(amplitude, frequency, r, c) {
+      const input = [];
+      const output = [];
+      let y = 0;
+      const rc = (r / 10) * (c / 10);
+      for (let i = 0; i < 240; i += 1) {
+        const t = i / 239;
+        const square = Math.sin(t * Math.PI * 2 * frequency / 2) >= 0 ? amplitude : -amplitude;
+        input.push(square);
+        y += (-square / Math.max(rc, 0.4)) * 0.05;
+        y = clamp(y, -11, 11);
+        output.push(y);
+      }
+      return {
+        formula: `Uout proportional zu -1/(R·C) · Integral(Uin dt)`,
+        extra: "Mehr Eingangsamplitude oder kleinere RC-Zeitkonstante -> steilere Rampe.",
+        state: output.at(-1),
+        input,
+        output
+      };
+    }
+  },
+  peak: {
+    title: "Peak-Detektor",
+    copy:
+      "Eine Diode laedt den Kondensator auf den bisherigen Spitzenwert. Ohne Puffer und ohne ideale Diode entstehen Diodenabfall und Entladungsfehler.",
+    render(amplitude, frequency, r, c) {
+      const input = [];
+      const output = [];
+      let peak = 0;
+      const leak = 1 - 1 / (150 + r + c);
+      for (let i = 0; i < 240; i += 1) {
+        const t = i / 239;
+        const value = amplitude * Math.sin(t * Math.PI * 2 * frequency / 2) + amplitude * 0.3;
+        input.push(value);
+        peak = Math.max(peak * leak, value - 0.6);
+        output.push(Math.max(0, peak));
+      }
+      return {
+        formula: "Uhold folgt dem bisherigen Hoechstwert minus Diodenabfall",
+        extra: "Eine Last am Ausgang entlaedt den Kondensator und verfaelscht den Messwert.",
+        state: output.at(-1),
+        input,
+        output
       };
     }
   }
 };
 
-const cycleSteps = [
-  {
-    title: "Eingaenge einlesen",
-    copy: "Sensor- und Schalterzustaende werden von der Hardware in die SPS uebernommen."
-  },
-  {
-    title: "Prozessabbild Eingabe",
-    copy: "Diese Werte werden fuer den laufenden Zyklus zwischengespeichert."
-  },
-  {
-    title: "Anwenderprogramm",
-    copy: "Die CPU verarbeitet das Programm mit genau diesen eingefrorenen Eingangswerten."
-  },
-  {
-    title: "Prozessabbild Ausgabe",
-    copy: "Die berechneten Ausgaenge werden intern gesammelt."
-  },
-  {
-    title: "Ausgaenge aktualisieren",
-    copy: "Erst jetzt schalten Lampen, Ventile oder Schuetze entsprechend um."
-  }
-];
-
 const quizData = [
-  {
-    question: "Was beschreibt Stromstaerke physikalisch?",
-    options: [
-      "Ladung pro Zeit",
-      "Energie pro Ladung",
-      "Leistung pro Widerstand"
-    ],
-    answer: 0,
-    explanation: "I = dQ/dt. Stromstaerke sagt, wie viel Ladung pro Sekunde bewegt wird."
-  },
-  {
-    question: "Was ist der zentrale Unterschied zwischen Halbleiter und Isolator?",
-    options: [
-      "Der Halbleiter hat typischerweise eine deutlich kleinere Bandluecke",
-      "Im Isolator gibt es nie Elektronen",
-      "Halbleiter leiten nur mit Wechselstrom"
-    ],
-    answer: 0,
-    explanation: "Die kleine Bandluecke macht den Halbleiter thermisch und durch Dotierung steuerbar."
-  },
   {
     question: "Warum braucht eine LED meist einen Vorwiderstand?",
     options: [
-      "Weil ihre Kennlinie nicht ohmsch ist und kleine Spannungssteigerungen grosse Stromanstiege erzeugen koennen",
-      "Weil sie sonst keine Farbe hat",
-      "Weil der Widerstand die LED heller macht"
+      "Weil ihre Kennlinie stark nichtlinear ist und kleine Spannungsanstiege grosse Stromanstiege ausloesen koennen",
+      "Weil Widerstaende die LED heller machen",
+      "Weil die LED sonst ihre Farbe aendert"
     ],
     answer: 0,
-    explanation: "Die LED begrenzt den Strom nicht selbst verlässlich. Ohne Strombegrenzung kann sie thermisch ueberlastet werden."
+    explanation: "LEDs begrenzen den Strom nicht verlässlich selbst. Ohne Strombegrenzung koennen sie thermisch ueberlastet werden."
   },
   {
-    question: "Was leistet die Gegenkopplung beim linearen OPV-Betrieb?",
+    question: "Was ist der Kern der Gegenkopplung beim linearen OPV-Betrieb?",
     options: [
-      "Sie regelt den OPV so ein, dass U+ und U- nahezu gleich werden",
-      "Sie macht aus jedem OPV automatisch einen Schmitt-Trigger",
-      "Sie hebt den Eingangswiderstand auf null"
+      "Der OPV regelt so, dass U+ und U- nahezu gleich werden",
+      "Der OPV erzeugt immer automatisch Hysterese",
+      "Der OPV zieht grosse Eingangsstroeme"
     ],
     answer: 0,
-    explanation: "Beim idealen OPV mit Gegenkopplung gilt in der linearen Rechnung U+ ≈ U-."
+    explanation: "Das ist genau die Grundlage fuer virtuelle Masse und die Standard-Rechenregeln."
   },
   {
-    question: "Was bleibt konstant, wenn ein geladener Kondensator von der Quelle getrennt wird?",
+    question: "Welche Aussage zu Freilaufdioden ist richtig?",
     options: [
-      "Die Ladung Q",
-      "Die Spannung U",
-      "Die Kapazitaet C"
+      "Sie schaffen beim Abschalten einer Spule einen Strompfad und begrenzen die Spannungsspitze",
+      "Sie erhoehen die Versorgungsspannung",
+      "Sie machen eine Spule ohmsch"
     ],
     answer: 0,
-    explanation: "Im isolierten Fall kann keine Ladung nachfliessen oder abfliessen, also bleibt Q konstant."
+    explanation: "Die gespeicherte magnetische Energie kann kontrolliert abgebaut werden, statt eine hohe Abschaltspannung zu erzeugen."
   },
   {
-    question: "Was unterscheidet Regelung von Steuerung?",
+    question: "Was bleibt bei einem von der Quelle getrennten Kondensator konstant?",
+    options: ["Q", "U", "C"],
+    answer: 0,
+    explanation: "Ohne Anschluss kann keine Ladung abfliessen oder nachfliessen, daher bleibt Q konstant."
+  },
+  {
+    question: "Was ist der Unterschied zwischen Steuerung und Regelung?",
     options: [
-      "Die Regelung verwendet eine Rueckmeldung der Ausgangsgroesse",
-      "Die Steuerung braucht immer einen OPV",
-      "Die Regelung arbeitet nie mit Sensoren"
+      "Regelung besitzt Rueckfuehrung des Istwertes, Steuerung nicht",
+      "Steuerung arbeitet immer digital, Regelung immer analog",
+      "Regelung braucht nie Sensoren"
     ],
     answer: 0,
-    explanation: "Rueckkopplung des Istwertes ist die Kernidee einer Regelung."
+    explanation: "Rueckmeldung ist die entscheidende Unterscheidung."
+  },
+  {
+    question: "Was beschreibt die Bandluecke bei Halbleitern besonders gut?",
+    options: [
+      "Warum Temperatur und Dotierung die Leitfaehigkeit stark beeinflussen",
+      "Warum Halbleiter nur mit Wechselstrom funktionieren",
+      "Warum alle Halbleiter isolieren"
+    ],
+    answer: 0,
+    explanation: "Gerade die kleine Bandluecke macht Halbleiter steuerbar."
+  },
+  {
+    question: "Warum sind Pull-up-Widerstaende notwendig?",
+    options: [
+      "Weil hochohmige Eingänge sonst floaten und stoeranfaellig unbestimmte Pegel annehmen",
+      "Weil sie den Mikrocontroller kuehlen",
+      "Weil Taster nur mit Wechselstrom arbeiten"
+    ],
+    answer: 0,
+    explanation: "Der Pull-up erzwingt einen definierten Zustand im offenen Fall."
   }
 ];
 
-const ledStandardResistors = [47, 56, 68, 82, 100, 120, 150, 180, 220, 270, 330, 390, 470, 560, 680, 820, 1000];
+let activeChallenge = "led";
+let selectedComponent = "switch";
+let challengeSolved = { led: false, coil: false, pullup: false };
+const builderState = {
+  led: {
+    slots: { switch: null, series: null, load: null },
+    closed: false,
+    resistance: 150
+  },
+  coil: {
+    slots: { switch: null, load: null, parallel: null },
+    powerOn: false,
+    diodeOrientation: "flyback"
+  },
+  pullup: {
+    slots: { top: null, bottom: null },
+    pressed: false,
+    resistance: 10
+  }
+};
 
-let activeMaterial = "conductor";
-let activeDoping = "intrinsic";
-let activeFlyback = "with";
-let activeOpampMode = "comparator";
-let schmittState = -12;
-let capacitorMode = "connected";
-let frozenCharge = null;
+let activeTopology = "comparator";
+let activeDynamic = "schmitt";
 let cycleIndex = 0;
 let cycleTimer = null;
+let activeMaterial = "conductor";
+let activeDoping = "intrinsic";
+let capacitorMode = "connected";
+let frozenCharge = null;
 let quizIndex = 0;
 let quizScore = 0;
 
-const $ = (id) => document.getElementById(id);
-
 function fmt(value, digits = 2) {
   return Number(value).toFixed(digits);
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
 }
 
 function engineering(value, unit = "") {
   const abs = Math.abs(value);
   if (abs >= 1) return `${value.toFixed(2)} ${unit}`.trim();
   if (abs >= 1e-3) return `${(value * 1e3).toFixed(2)} m${unit}`.trim();
-  if (abs >= 1e-6) return `${(value * 1e6).toFixed(2)} µ${unit}`.trim();
+  if (abs >= 1e-6) return `${(value * 1e6).toFixed(2)} u${unit}`.trim();
   if (abs >= 1e-9) return `${(value * 1e9).toFixed(2)} n${unit}`.trim();
   if (abs >= 1e-12) return `${(value * 1e12).toFixed(2)} p${unit}`.trim();
   return `${value.toExponential(2)} ${unit}`.trim();
 }
 
-function nearestResistor(value) {
-  return ledStandardResistors.reduce((best, current) => {
-    return Math.abs(current - value) < Math.abs(best - value) ? current : best;
-  }, ledStandardResistors[0]);
+function drawAxes(ctx, width, height, xLabel, yLabel) {
+  ctx.clearRect(0, 0, width, height);
+  ctx.strokeStyle = "rgba(0,0,0,0.2)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(40, 16);
+  ctx.lineTo(40, height - 30);
+  ctx.lineTo(width - 16, height - 30);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(0,0,0,0.65)";
+  ctx.font = "12px Avenir Next";
+  ctx.fillText(yLabel, 10, 18);
+  ctx.fillText(xLabel, width - 60, height - 10);
+}
+
+function drawPoint(ctx, x, y) {
+  ctx.fillStyle = "#20724d";
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawTransferLine(ctx, width, height, fn, markX) {
+  const scaleX = (v) => 40 + ((v + 10) / 20) * (width - 60);
+  const scaleY = (v) => height - 30 - ((v + 12) / 24) * (height - 50);
+  ctx.strokeStyle = "#111";
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  for (let i = 0; i <= 240; i += 1) {
+    const xValue = -10 + (i / 240) * 20;
+    const yValue = fn(xValue);
+    const px = scaleX(xValue);
+    const py = scaleY(yValue);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  drawPoint(ctx, scaleX(markX), scaleY(fn(markX)));
+}
+
+function drawWaveform(ctx, width, height, values, color, min, max) {
+  const scaleY = (v) => height - 30 - ((v - min) / (max - min)) * (height - 50);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  values.forEach((value, index) => {
+    const x = 40 + index / (values.length - 1) * (width - 60);
+    const y = scaleY(value);
+    if (index === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
 }
 
 function setupJumpButtons() {
   document.querySelectorAll(".jump-button").forEach((button) => {
     button.addEventListener("click", () => {
       const target = button.dataset.target;
-      if (target) {
-        $(target).scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      if (target) $(target).scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
 
+function clearWireStates() {
+  document.querySelectorAll(".wire").forEach((wire) => {
+    wire.classList.remove("live", "warn");
+  });
+}
+
+function clearSlotStates(challengeKey) {
+  Object.values(slotConfig[challengeKey]).forEach((slot) => {
+    slot.classList.remove("good", "bad");
+  });
+}
+
+function componentLabel(component, challengeKey, slotKey) {
+  if (!component) return slotConfig[challengeKey][slotKey].dataset.slot || "Slot";
+  if (challengeKey === "led" && slotKey === "series" && component === "resistor") {
+    return `${builderState.led.resistance} Ohm`;
+  }
+  if (challengeKey === "pullup" && slotKey === "top" && component === "resistor") {
+    return `${builderState.pullup.resistance} k Pull-up`;
+  }
+  if (challengeKey === "coil" && slotKey === "parallel" && component === "diode") {
+    return builderState.coil.diodeOrientation === "flyback" ? "Diode (Freilauf)" : "Diode (falsch)";
+  }
+  const labels = {
+    switch: "Schalter",
+    resistor: "Widerstand",
+    led: "LED",
+    coil: "Spule",
+    diode: "Diode",
+    pushbutton: "Taster"
+  };
+  return labels[component] || component;
+}
+
+function renderBuilderBoard() {
+  document.querySelectorAll(".challenge-board").forEach((board) => {
+    board.classList.toggle("active", board.id === challengeData[activeChallenge].boardId);
+  });
+  document.querySelectorAll(".challenge-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.challenge === activeChallenge);
+  });
+  document.querySelectorAll(".control-group").forEach((group) => {
+    group.classList.toggle("active", group.dataset.control === challengeData[activeChallenge].control);
+  });
+
+  $("challenge-title").textContent = challengeData[activeChallenge].title;
+  $("challenge-copy").textContent = challengeData[activeChallenge].copy;
+
+  Object.entries(slotConfig).forEach(([challengeKey, slots]) => {
+    Object.entries(slots).forEach(([slotKey, button]) => {
+      const component = builderState[challengeKey].slots[slotKey];
+      button.textContent = componentLabel(component, challengeKey, slotKey);
+      button.classList.toggle("filled", Boolean(component));
+      if (!component) button.classList.remove("good", "bad");
+    });
+  });
+}
+
+function setBuilderStatus(status, detail, a, b, c) {
+  $("builder-status").textContent = status;
+  $("builder-detail").textContent = detail;
+  $("builder-metric-a").textContent = a;
+  $("builder-metric-b").textContent = b;
+  $("builder-metric-c").textContent = c;
+  $("challenge-progress").textContent = `${Object.values(challengeSolved).filter(Boolean).length} / 3 Aufgaben korrekt`;
+}
+
+function markSlots(challengeKey, evaluation) {
+  clearSlotStates(challengeKey);
+  Object.entries(slotConfig[challengeKey]).forEach(([slotKey, slot]) => {
+    const isGood = evaluation.goodSlots?.includes(slotKey);
+    const isBad = evaluation.badSlots?.includes(slotKey);
+    if (isGood) slot.classList.add("good");
+    if (isBad) slot.classList.add("bad");
+  });
+}
+
+function simulateLEDChallenge() {
+  clearWireStates();
+  const state = builderState.led;
+  const evaluation = { goodSlots: [], badSlots: [] };
+  const correct =
+    state.slots.switch === "switch" &&
+    state.slots.series === "resistor" &&
+    state.slots.load === "led";
+  if (state.slots.switch === "switch") evaluation.goodSlots.push("switch");
+  else if (state.slots.switch) evaluation.badSlots.push("switch");
+  if (state.slots.series === "resistor") evaluation.goodSlots.push("series");
+  else if (state.slots.series) evaluation.badSlots.push("series");
+  if (state.slots.load === "led") evaluation.goodSlots.push("load");
+  else if (state.slots.load) evaluation.badSlots.push("load");
+
+  markSlots("led", evaluation);
+
+  if (!correct) {
+    challengeSolved.led = false;
+    setBuilderStatus(
+      "Die Topologie stimmt noch nicht.",
+      "Du brauchst einen geschlossenen Serienpfad aus Schalter, Vorwiderstand und LED.",
+      `Strom: 0 mA`,
+      `LED-Spannung: 2.2 V angenommen`,
+      `Vorwiderstand: ${state.resistance} Ohm`
+    );
+    return;
+  }
+
+  const current = state.closed ? (5 - 2.2) / state.resistance : 0;
+  if (state.closed) {
+    wireGroups.led.forEach((id) => $(id).classList.add(current <= 0.025 && current >= 0.005 ? "live" : "warn"));
+  }
+
+  if (!state.closed) {
+    challengeSolved.led = false;
+    setBuilderStatus(
+      "Topologie korrekt, aber der Schalter ist offen.",
+      "Die Schaltung ist richtig aufgebaut. Schliesse jetzt den Schalter, damit Strom fliesst und du den Betriebspunkt beurteilen kannst.",
+      `Strom: 0.00 mA`,
+      `Vorwiderstand: ${state.resistance} Ohm`,
+      "Bewertung: noch kein Betriebsfall"
+    );
+    return;
+  }
+
+  const currentmA = current * 1000;
+  const safe = currentmA >= 5 && currentmA <= 25;
+  challengeSolved.led = safe;
+  setBuilderStatus(
+    safe ? "Schaltung korrekt und sicher." : "Schaltung korrekt, aber der Strom ist unguenstig.",
+    safe
+      ? "Der Strom liegt im typischen sicheren Bereich fuer eine normale Anzeige-LED."
+      : "Die Topologie stimmt, aber der Widerstand ist fuer 5 V und 2.2 V LED-Spannung zu klein oder zu gross gewaehlt.",
+    `Strom: ${currentmA.toFixed(1)} mA`,
+    `Spannung am Widerstand: ${(5 - 2.2).toFixed(2)} V`,
+    `Leistung im Widerstand: ${(current * current * state.resistance).toFixed(3)} W`
+  );
+}
+
+function simulateCoilChallenge() {
+  clearWireStates();
+  const state = builderState.coil;
+  const evaluation = { goodSlots: [], badSlots: [] };
+  if (state.slots.switch === "switch") evaluation.goodSlots.push("switch");
+  else if (state.slots.switch) evaluation.badSlots.push("switch");
+  if (state.slots.load === "coil") evaluation.goodSlots.push("load");
+  else if (state.slots.load) evaluation.badSlots.push("load");
+  if (state.slots.parallel === "diode") evaluation.goodSlots.push("parallel");
+  else if (state.slots.parallel) evaluation.badSlots.push("parallel");
+  markSlots("coil", evaluation);
+
+  const hasMainPath = state.slots.switch === "switch" && state.slots.load === "coil";
+  const hasDiode = state.slots.parallel === "diode";
+  const correctOrientation = state.diodeOrientation === "flyback";
+
+  if (!hasMainPath) {
+    challengeSolved.coil = false;
+    setBuilderStatus(
+      "Die Grundschaltung stimmt noch nicht.",
+      "Du brauchst mindestens Schalter und Spule im Lastkreis. Danach kommt die Schutzdiode parallel zur Spule.",
+      "Strompfad: unvollstaendig",
+      `Diodenlage: ${correctOrientation ? "Freilauf" : "falsch"}`,
+      `Spule: ${state.powerOn ? "eingeschaltet" : "abgeschaltet"}`
+    );
+    return;
+  }
+
+  if (state.powerOn) {
+    wireGroups.coilMain.forEach((id) => $(id).classList.add("live"));
+    if (hasDiode && !correctOrientation) {
+      wireGroups.coilBranch.forEach((id) => $(id).classList.add("warn"));
+      challengeSolved.coil = false;
+      setBuilderStatus(
+        "Gefaehrliche Diodenlage im Einschaltfall.",
+        "Die Diode liegt parallel zur Spule, aber in falscher Richtung. So wuerde sie die Versorgung im Einschaltmoment praktisch kurzschliessen.",
+        "Spule: eingeschaltet",
+        "Spitzenspannung: im Einschaltfall nicht das Problem",
+        "Fehler: Diode muss im Normalbetrieb sperren"
+      );
+      return;
+    }
+    challengeSolved.coil = false;
+    setBuilderStatus(
+      hasDiode ? "Einschaltfall korrekt, pruefe jetzt den Abschaltfall." : "Spule laeuft, aber Schutz fehlt.",
+      hasDiode
+        ? "Im eingeschalteten Zustand sperrt die Freilaufdiode und stoert nicht. Schalte jetzt ab, um den Schutzfall zu pruefen."
+        : "Ohne Diode sieht im Einschaltfall alles normal aus. Das Problem zeigt sich erst beim Abschalten.",
+      "Spule: eingeschaltet",
+      hasDiode ? `Diodenlage: ${correctOrientation ? "korrekt" : "falsch"}` : "Diode: fehlt",
+      "Merksatz: Problemfall ist das Abschalten"
+    );
+    return;
+  }
+
+  if (hasDiode && correctOrientation) {
+    wireGroups.coilBranch.forEach((id) => $(id).classList.add("live"));
+    wireGroups.coilMain.forEach((id) => $(id).classList.add("live"));
+    challengeSolved.coil = true;
+    setBuilderStatus(
+      "Schaltung korrekt und Schutz wirksam.",
+      "Nach dem Abschalten fliesst der Strom weiter im Kreis durch Spule und Diode. Die Spannungsspitze bleibt niedrig.",
+      "Abschaltspitze: klein, in der Naehe der Diodenspannung",
+      "Strompfad: Spule -> Diode -> Spule",
+      "Bewertung: Aufgabe geloest"
+    );
+  } else {
+    wireGroups.coilMain.forEach((id) => $(id).classList.add("warn"));
+    challengeSolved.coil = false;
+    setBuilderStatus(
+      "Abschaltfall gefaehrlich.",
+      hasDiode
+        ? "Eine Diode ist vorhanden, aber falsch orientiert. Sie bietet im Abschaltmoment keinen sicheren Umlaufpfad."
+        : "Ohne Freilaufdiode erzwingt die Selbstinduktion eine hohe Spannungsspitze.",
+      "Abschaltspitze: hoch, potentiell viele 10 bis 100 V",
+      hasDiode ? `Diodenlage: ${correctOrientation ? "korrekt" : "falsch"}` : "Diode: fehlt",
+      "Folge: Transistor- oder Mikrocontroller-Schaeden moeglich"
+    );
+  }
+}
+
+function simulatePullupChallenge() {
+  clearWireStates();
+  const state = builderState.pullup;
+  const evaluation = { goodSlots: [], badSlots: [] };
+  if (state.slots.top === "resistor") evaluation.goodSlots.push("top");
+  else if (state.slots.top) evaluation.badSlots.push("top");
+  if (state.slots.bottom === "pushbutton") evaluation.goodSlots.push("bottom");
+  else if (state.slots.bottom) evaluation.badSlots.push("bottom");
+  markSlots("pullup", evaluation);
+
+  const correct = state.slots.top === "resistor" && state.slots.bottom === "pushbutton";
+  if (!correct) {
+    challengeSolved.pullup = false;
+    setBuilderStatus(
+      "Der Eingang ist noch nicht sauber beschaltet.",
+      "Du brauchst einen Widerstand nach VCC und einen Taster nach GND. Sonst floatet der Eingang oder er laesst sich nicht sinnvoll schalten.",
+      `Taster: ${state.pressed ? "gedrueckt" : "offen"}`,
+      `Pull-up: ${state.resistance} kOhm`,
+      "Pegel: unbestimmt"
+    );
+    return;
+  }
+
+  $("pullup-wire-top").classList.add("live");
+  if (state.pressed) {
+    $("pullup-wire-bottom").classList.add("live");
+    $("pullup-wire-node").classList.add("live");
+    setBuilderStatus(
+      "Pull-up korrekt, Taster gedrueckt.",
+      "Im offenen Zustand zieht der Widerstand den Eingang auf HIGH. Beim Druecken wird der Knoten nach GND gezogen und der Eingang wird LOW.",
+      "Eingangspegel: LOW",
+      `Pull-up-Strom: ${(5 / (state.resistance * 1000) * 1000).toFixed(3)} mA`,
+      "Bewertung: Aufgabe geloest"
+    );
+  } else {
+    $("pullup-wire-node").classList.add("live");
+    setBuilderStatus(
+      "Pull-up korrekt, Taster offen.",
+      "Der Widerstand sorgt dafuer, dass der Eingang auch ohne Tastendruck einen definierten HIGH-Zustand hat.",
+      "Eingangspegel: HIGH",
+      `Pull-up-Strom: praktisch 0 mA im offenen Fall`,
+      "Druecke den Taster, um den LOW-Fall zu sehen"
+    );
+  }
+  challengeSolved.pullup = true;
+}
+
+function simulateBuilder() {
+  if (activeChallenge === "led") simulateLEDChallenge();
+  if (activeChallenge === "coil") simulateCoilChallenge();
+  if (activeChallenge === "pullup") simulatePullupChallenge();
+  $("challenge-progress").textContent = `${Object.values(challengeSolved).filter(Boolean).length} / 3 Aufgaben korrekt`;
+}
+
+function resetChallengeState(challengeKey) {
+  if (challengeKey === "led") {
+    builderState.led = { slots: { switch: null, series: null, load: null }, closed: false, resistance: 150 };
+    $("builder-led-toggle").textContent = "Schalter schliessen";
+    $("builder-led-resistance").value = "150";
+  }
+  if (challengeKey === "coil") {
+    builderState.coil = { slots: { switch: null, load: null, parallel: null }, powerOn: false, diodeOrientation: "flyback" };
+    $("builder-coil-toggle").textContent = "Spule einschalten";
+    $("builder-diode-orientation").textContent = "Diodenlage: Freilauf";
+  }
+  if (challengeKey === "pullup") {
+    builderState.pullup = { slots: { top: null, bottom: null }, pressed: false, resistance: 10 };
+    $("builder-button-toggle").textContent = "Taster offen";
+    $("builder-pullup-resistance").value = "10";
+  }
+  challengeSolved[challengeKey] = false;
+  clearWireStates();
+  renderBuilderBoard();
+  setBuilderStatus(
+    "Aufgabe zurueckgesetzt.",
+    "Setze Bauteile in die Slots und starte die Simulation erneut.",
+    "Messwert A: -",
+    "Messwert B: -",
+    "Messwert C: -"
+  );
+}
+
+function bindBuilder() {
+  document.querySelectorAll(".challenge-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeChallenge = button.dataset.challenge;
+      renderBuilderBoard();
+      clearWireStates();
+      setBuilderStatus(
+        "Neue Aufgabe geladen.",
+        challengeData[activeChallenge].copy,
+        "Messwert A: -",
+        "Messwert B: -",
+        "Messwert C: -"
+      );
+    });
+  });
+
+  document.querySelectorAll(".palette-item").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedComponent = button.dataset.component;
+      document.querySelectorAll(".palette-item").forEach((item) => {
+        item.classList.toggle("active", item.dataset.component === selectedComponent);
+      });
+    });
+  });
+
+  Object.entries(slotConfig).forEach(([challengeKey, slots]) => {
+    Object.entries(slots).forEach(([slotKey, button]) => {
+      button.addEventListener("click", () => {
+        if (selectedComponent === "clear") {
+          builderState[challengeKey].slots[slotKey] = null;
+        } else {
+          builderState[challengeKey].slots[slotKey] = selectedComponent;
+        }
+        renderBuilderBoard();
+      });
+    });
+  });
+
+  $("builder-led-resistance").addEventListener("input", (event) => {
+    builderState.led.resistance = Number(event.target.value);
+    renderBuilderBoard();
+  });
+  $("builder-led-toggle").addEventListener("click", () => {
+    builderState.led.closed = !builderState.led.closed;
+    $("builder-led-toggle").textContent = builderState.led.closed ? "Schalter oeffnen" : "Schalter schliessen";
+  });
+
+  $("builder-coil-toggle").addEventListener("click", () => {
+    builderState.coil.powerOn = !builderState.coil.powerOn;
+    $("builder-coil-toggle").textContent = builderState.coil.powerOn ? "Spule abschalten" : "Spule einschalten";
+  });
+  $("builder-diode-orientation").addEventListener("click", () => {
+    builderState.coil.diodeOrientation = builderState.coil.diodeOrientation === "flyback" ? "wrong" : "flyback";
+    $("builder-diode-orientation").textContent =
+      builderState.coil.diodeOrientation === "flyback" ? "Diodenlage: Freilauf" : "Diodenlage: falsch";
+    renderBuilderBoard();
+  });
+
+  $("builder-pullup-resistance").addEventListener("input", (event) => {
+    builderState.pullup.resistance = Number(event.target.value);
+    renderBuilderBoard();
+  });
+  $("builder-button-toggle").addEventListener("click", () => {
+    builderState.pullup.pressed = !builderState.pullup.pressed;
+    $("builder-button-toggle").textContent = builderState.pullup.pressed ? "Taster gedrueckt" : "Taster offen";
+  });
+
+  $("builder-simulate").addEventListener("click", simulateBuilder);
+  $("builder-reset").addEventListener("click", () => resetChallengeState(activeChallenge));
+}
+
+function drawTopology() {
+  const a = Number($("opv-a").value);
+  const b = Number($("opv-b").value);
+  const r1 = Number($("opv-r1").value);
+  const r2 = Number($("opv-r2").value);
+  const mode = topologyModes[activeTopology];
+  const result = mode.evaluate(a, b, r1, r2);
+
+  $("opv-topology-title").textContent = mode.title;
+  $("opv-topology-copy").textContent = mode.copy;
+  $("opv-topology-formula").textContent = result.formula;
+  $("opv-topology-output").textContent = `Uout = ${result.out >= 0 ? "+" : ""}${result.out.toFixed(2)} V`;
+  $("opv-topology-extra").textContent = result.extra;
+  $("opv-schematic-text").textContent =
+    activeTopology === "difference"
+      ? "Zwei Eingangsnetzwerke werden gegeneinander ausgewertet."
+      : activeTopology === "follower"
+        ? "Rueckkopplung direkt vom Ausgang auf den invertierenden Eingang."
+        : "Widerstandsnetzwerk bestimmt die Rueckkopplung und damit den Arbeitspunkt.";
+
+  const canvas = $("opv-topology-chart");
+  const ctx = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  mode.draw(ctx, width, height, a, b, r1, r2);
+}
+
+function drawDynamic() {
+  const amplitude = Number($("opv-dyn-amplitude").value);
+  const frequency = Number($("opv-dyn-frequency").value);
+  const r = Number($("opv-dyn-r").value);
+  const c = Number($("opv-dyn-c").value);
+  const mode = dynamicModes[activeDynamic];
+  const result = mode.render(amplitude, frequency, r, c);
+
+  $("opv-dynamic-title").textContent = mode.title;
+  $("opv-dynamic-copy").textContent = mode.copy;
+  $("opv-dynamic-formula").textContent = result.formula;
+  $("opv-dynamic-output").textContent = `Momentaner Endzustand: ${result.state >= 0 ? "+" : ""}${Number(result.state).toFixed(2)} V`;
+  $("opv-dynamic-extra").textContent = result.extra;
+
+  const canvas = $("opv-dynamic-chart");
+  const ctx = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  drawAxes(ctx, width, height, "Zeit", "Signal");
+  let min = Math.min(...result.input, ...result.output, -12);
+  let max = Math.max(...result.input, ...result.output, 12);
+  if (activeDynamic === "peak") min = Math.min(...result.input, -1);
+  drawWaveform(ctx, width, height, result.input, "#7a7a7a", min, max);
+  drawWaveform(ctx, width, height, result.output, "#111111", min, max);
+
+  if (result.thresholds) {
+    const scaleY = (v) => height - 30 - ((v - min) / (max - min)) * (height - 50);
+    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = "rgba(181,91,34,0.55)";
+    result.thresholds.forEach((threshold) => {
+      ctx.beginPath();
+      ctx.moveTo(40, scaleY(threshold));
+      ctx.lineTo(width - 16, scaleY(threshold));
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+  }
+}
+
+function bindOPV() {
+  document.querySelectorAll(".topology-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeTopology = button.dataset.topology;
+      document.querySelectorAll(".topology-button").forEach((item) => {
+        item.classList.toggle("active", item.dataset.topology === activeTopology);
+      });
+      drawTopology();
+    });
+  });
+  document.querySelectorAll(".dynamic-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeDynamic = button.dataset.dynamic;
+      document.querySelectorAll(".dynamic-button").forEach((item) => {
+        item.classList.toggle("active", item.dataset.dynamic === activeDynamic);
+      });
+      drawDynamic();
+    });
+  });
+
+  ["opv-a", "opv-b", "opv-r1", "opv-r2"].forEach((id) => {
+    $(id).addEventListener("input", drawTopology);
+  });
+  ["opv-dyn-amplitude", "opv-dyn-frequency", "opv-dyn-r", "opv-dyn-c"].forEach((id) => {
+    $(id).addEventListener("input", drawDynamic);
+  });
+}
+
 function updateFundamentals() {
-  const carrier18 = parseFloat($("charge-carriers").value);
-  const time = parseFloat($("charge-time").value);
+  const carrier18 = Number($("charge-carriers").value);
+  const time = Number($("charge-time").value);
   const q = carrier18 * 1e18 * 1.602176634e-19;
   const i = q / time;
+  const work = Number($("work-input").value);
+  const qVoltage = Number($("voltage-charge").value);
+  const voltage = work / qVoltage;
+  const power = voltage * Number($("power-current").value);
+  const uq = Number($("source-uq").value);
+  const ri = Number($("source-ri").value);
+  const rl = Number($("source-rl").value);
+  const sourceCurrent = uq / (ri + rl);
+  const uk = uq - ri * sourceCurrent;
+  const pload = sourceCurrent * sourceCurrent * rl;
 
   $("charge-value").textContent = fmt(q, 2);
   $("current-value").textContent = fmt(i, 2);
-  $("charge-stream").style.setProperty("--flow-speed", `${Math.max(0.6, 4 - Math.min(i, 3))}s`);
-
-  const work = parseFloat($("work-input").value);
-  const qForVoltage = parseFloat($("voltage-charge").value);
-  const powerCurrent = parseFloat($("power-current").value);
-  const u = work / qForVoltage;
-  const p = u * powerCurrent;
-
-  $("voltage-value").textContent = fmt(u, 2);
-  $("power-value").textContent = fmt(p, 2);
-  $("voltage-bar").style.width = `${Math.min(100, u / 24 * 100)}%`;
-  $("power-bar").style.width = `${Math.min(100, p / 100 * 100)}%`;
-
-  const uq = parseFloat($("source-uq").value);
-  const ri = parseFloat($("source-ri").value);
-  const rl = parseFloat($("source-rl").value);
-  const sourceCurrent = uq / (ri + rl);
-  const uk = sourceCurrent * rl;
-  const pload = sourceCurrent * sourceCurrent * rl;
-
-  $("source-current").textContent = fmt(sourceCurrent, 2);
+  $("voltage-value").textContent = fmt(voltage, 2);
+  $("power-value").textContent = fmt(power, 2);
   $("source-terminal").textContent = fmt(uk, 2);
+  $("source-current").textContent = fmt(sourceCurrent, 2);
   $("source-power").textContent = fmt(pload, 2);
-  $("source-match-note").textContent =
-    Math.abs(rl - ri) < 0.11
-      ? "Hier liegt nahezu Leistungsanpassung vor: RL ≈ Ri. Maximale Lastleistung, aber auch hohe Verluste in der Quelle."
-      : "Klemmenspannung folgt Uk = Uq - Ri · I. Je kleiner RL oder je groesser Ri, desto staerker bricht die Ausgangsspannung ein.";
 }
 
 function renderMaterial() {
-  const data = materialContent[activeMaterial];
-  const temp = parseFloat($("material-temperature").value);
-  $("material-title").textContent = data.title;
-  $("material-copy").textContent = data.copy;
-  $("electron-level").style.bottom = `${data.level}px`;
-  $("band-gap").style.minHeight = `${data.gap}px`;
-  $("band-summary").textContent = data.bandSummary;
-  $("conductivity-summary").textContent = data.conductivity(temp);
-  $("conduction-band").style.opacity =
-    activeMaterial === "insulator" ? "0.55" : activeMaterial === "semiconductor" ? "0.78" : "1";
+  const temp = Number($("material-temperature").value);
+  const material = materialContent[activeMaterial];
+  const doping = dopingContent[activeDoping];
+  $("material-title").textContent = material.title;
+  $("material-copy").textContent = material.copy;
+  $("band-summary").textContent = material.summary;
+  $("conductivity-summary").textContent = material.conductivity(temp);
+  $("band-gap").textContent =
+    activeMaterial === "conductor" ? "praktisch keine relevante Luecke" : activeMaterial === "semiconductor" ? "kleine Bandluecke" : "grosse Bandluecke";
+  $("doping-title").textContent = doping.title;
+  $("doping-copy").textContent = doping.copy;
+  $("majority-carrier").textContent = doping.majority;
 
   document.querySelectorAll(".material-button").forEach((button) => {
     button.classList.toggle("active", button.dataset.material === activeMaterial);
   });
-}
-
-function renderDoping() {
-  const data = dopingContent[activeDoping];
-  $("doping-title").textContent = data.title;
-  $("doping-copy").textContent = data.copy;
-  $("majority-carrier").textContent = data.majority;
-  $("device-hint").textContent = data.hint;
-
-  const electronRow = $("electron-row");
-  const holeRow = $("hole-row");
-  electronRow.innerHTML = "";
-  holeRow.innerHTML = "";
-
-  Array.from({ length: data.electrons }).forEach(() => {
-    const dot = document.createElement("span");
-    electronRow.appendChild(dot);
-  });
-  Array.from({ length: data.holes }).forEach(() => {
-    const dot = document.createElement("span");
-    holeRow.appendChild(dot);
-  });
-
   document.querySelectorAll(".doping-button").forEach((button) => {
     button.classList.toggle("active", button.dataset.doping === activeDoping);
   });
 }
 
-function drawAxes(ctx, width, height, labels = {}) {
-  ctx.clearRect(0, 0, width, height);
-  ctx.strokeStyle = "rgba(255,255,255,0.16)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(38, 12);
-  ctx.lineTo(38, height - 28);
-  ctx.lineTo(width - 12, height - 28);
-  ctx.stroke();
-  ctx.fillStyle = "rgba(231,241,245,0.7)";
-  ctx.font = "12px Trebuchet MS";
-  if (labels.y) ctx.fillText(labels.y, 10, 18);
-  if (labels.x) ctx.fillText(labels.x, width - 64, height - 10);
+function computeCapacitance(areaCm2, distanceMm, er) {
+  const e0 = 8.854187817e-12;
+  return er * e0 * (areaCm2 / 10000) / (distanceMm / 1000);
 }
 
-function drawDiodeCurve() {
-  const canvas = $("diode-curve");
-  const ctx = canvas.getContext("2d");
-  const width = canvas.width;
-  const height = canvas.height;
-  drawAxes(ctx, width, height, { x: "U_D", y: "I" });
+function updateFieldLab() {
+  updateFundamentals();
+  renderMaterial();
 
-  const supply = parseFloat($("led-supply").value);
-  const forward = parseFloat($("led-color").value);
-  const currentA = parseFloat($("led-current").value) / 1000;
-  const rawR = (supply - forward) / currentA;
-  const safeR = rawR > 0 ? rawR : 0;
-  const pLoss = safeR > 0 ? currentA * currentA * safeR : 0;
-  const suggested = safeR > 0 ? nearestResistor(safeR) : 0;
-
-  $("led-forward").textContent = fmt(forward, 2);
-  $("led-resistor").textContent = safeR > 0 ? `${fmt(safeR, 0)} (naechstliegend ${suggested})` : "nicht moeglich";
-  $("led-power-loss").textContent = fmt(pLoss, 3);
-  $("led-note").textContent =
-    safeR > 0
-      ? `Mit ${suggested} Ohm liegt der Strom in realistischer Groessenordnung. Ohne Widerstand waere die Kennlinie zu steil.`
-      : "Die Versorgung liegt unter oder auf der Diodenspannung. Mit diesen Werten fliesst praktisch kein sinnvoller LED-Strom.";
-
-  ctx.strokeStyle = "#57d0ff";
-  ctx.lineWidth = 2.4;
-  ctx.beginPath();
-  for (let x = 0; x <= 260; x += 2) {
-    const v = (x / 260) * 5;
-    const current = v < forward ? 0.002 * Math.exp((v - forward) * 2) : Math.min(0.03, 0.001 + (v - forward) ** 2 * 0.05);
-    const y = height - 28 - current / 0.03 * (height - 52);
-    const px = 38 + x;
-    if (x === 0) ctx.moveTo(px, y);
-    else ctx.lineTo(px, y);
-  }
-  ctx.stroke();
-
-  const xMark = 38 + forward / 5 * 260;
-  const yMark = height - 28 - Math.min(currentA, 0.03) / 0.03 * (height - 52);
-  ctx.fillStyle = "#f4b54d";
-  ctx.beginPath();
-  ctx.arc(xMark, yMark, 5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "rgba(231,241,245,0.8)";
-  ctx.fillText("Betriebspunkt", xMark + 8, yMark - 8);
-}
-
-function updateZener() {
-  const input = parseFloat($("zener-input").value);
-  const zener = parseFloat($("zener-voltage").value);
-  const output = Math.min(input, zener);
-  $("zener-in-display").textContent = fmt(input, 1);
-  $("zener-out-display").textContent = fmt(output, 1);
-  $("zener-input-bar").style.width = `${Math.min(100, input / 15 * 100)}%`;
-  $("zener-output-bar").style.width = `${Math.min(100, output / 15 * 100)}%`;
-}
-
-function drawFlyback() {
-  const canvas = $("flyback-chart");
-  const ctx = canvas.getContext("2d");
-  const width = canvas.width;
-  const height = canvas.height;
-  drawAxes(ctx, width, height, { x: "t", y: "U" });
-
-  ctx.strokeStyle = activeFlyback === "with" ? "#72db8f" : "#ff7b47";
-  ctx.lineWidth = 2.4;
-  ctx.beginPath();
-  for (let x = 0; x <= 300; x += 2) {
-    const t = x / 300;
-    let value;
-    if (activeFlyback === "with") {
-      value = x < 40 ? 0.85 : 0.12 + 0.7 * Math.exp(-(t - 0.13) * 5.5);
-    } else {
-      value = x < 40 ? 0.85 : 0.15 + 3.4 * Math.exp(-(t - 0.13) * 10);
-    }
-    const y = height - 28 - Math.min(value / 4, 1) * (height - 52);
-    const px = 38 + x;
-    if (x === 0) ctx.moveTo(px, y);
-    else ctx.lineTo(px, y);
-  }
-  ctx.stroke();
-
-  $("flyback-copy").textContent =
-    activeFlyback === "with"
-      ? "Mit Freilaufdiode bleibt der Strompfad nach dem Abschalten erhalten. Die Spannungsspitze bleibt niedrig, die Energie wird langsam im Kreis abgebaut."
-      : "Ohne Freilaufdiode erzwingt die Selbstinduktion eine hohe Abschaltspannung. Das kann Transistoren, Relaiskontakte oder Mikrocontroller-Ausgaenge gefaehrden.";
-  $("flyback-path").textContent =
-    activeFlyback === "with" ? "Spule -> Diode -> Spule" : "kein definierter Kreis; Strom sucht sich einen Ueberschlagsweg";
-  $("flyback-spike").textContent = activeFlyback === "with" ? "niedrig, typ. etwa Diodenspannung" : "hoch, potentiell viele 10 bis 100 V";
-}
-
-function updateMeasurement() {
-  const sensor = parseFloat($("sensor-resistance").value);
-  const lead = parseFloat($("lead-resistance").value);
-  const twoWire = sensor + 2 * lead;
-  const fourWire = sensor;
-  const tempError = (twoWire - sensor) / 0.385;
-
-  $("two-wire-value").textContent = fmt(twoWire, 1);
-  $("four-wire-value").textContent = fmt(fourWire, 1);
-  $("wire-temp-error").textContent = fmt(tempError, 1);
-}
-
-function updateOpamp() {
-  const vin = parseFloat($("opamp-vin").value);
-  const vref = parseFloat($("opamp-vref").value);
-  const r1 = parseFloat($("opamp-r1").value);
-  const r2 = parseFloat($("opamp-r2").value);
-  const mode = opampModes[activeOpampMode];
-
-  let result;
-  if (activeOpampMode === "schmitt") {
-    result = mode.solve(vin, vref, r1, r2, schmittState);
-    schmittState = result.state;
-  } else {
-    result = mode.solve(vin, vref, r1, r2, schmittState);
-  }
-
-  $("opamp-title").textContent = mode.title;
-  $("opamp-copy").textContent = mode.copy;
-  $("opamp-note").textContent = mode.note;
-  $("opamp-output").textContent = `${result.output >= 0 ? "+" : ""}${fmt(result.output, 1)}`;
-  $("opamp-formula").textContent = result.formula;
-
-  const widthPercent = Math.max(10, result.bar * 100);
-  const bar = $("opamp-output-bar");
-  bar.style.width = `${widthPercent}%`;
-  bar.style.background =
-    result.output >= 0
-      ? "linear-gradient(90deg, var(--cyan), var(--green))"
-      : "linear-gradient(90deg, var(--pink), var(--orange))";
-
-  document.querySelectorAll(".opamp-button").forEach((button) => {
-    button.classList.toggle("active", button.dataset.mode === activeOpampMode);
-  });
-}
-
-function computeCapacitance(areaCm2, distanceMm, epsilonR) {
-  const epsilon0 = 8.854187817e-12;
-  const areaM2 = areaCm2 / 10000;
-  const distanceM = distanceMm / 1000;
-  return epsilonR * epsilon0 * areaM2 / distanceM;
-}
-
-function updateCapacitor() {
-  const area = parseFloat($("cap-area").value);
-  const distance = parseFloat($("cap-distance").value);
-  const epsilonR = parseFloat($("cap-dielectric").value);
-  const voltageInput = parseFloat($("cap-voltage").value);
-  const epsilon0 = 8.854187817e-12;
-  const capacitance = computeCapacitance(area, distance, epsilonR);
-
-  let voltage = voltageInput;
+  const area = Number($("cap-area").value);
+  const distance = Number($("cap-distance").value);
+  const er = Number($("cap-dielectric").value);
+  const sliderVoltage = Number($("cap-voltage").value);
+  const c = computeCapacitance(area, distance, er);
+  let effectiveVoltage = sliderVoltage;
   if (capacitorMode === "isolated") {
     if (frozenCharge === null) {
-      frozenCharge = capacitance * voltageInput;
+      frozenCharge = c * sliderVoltage;
     }
-    voltage = frozenCharge / capacitance;
+    effectiveVoltage = frozenCharge / c;
   } else {
-    frozenCharge = capacitance * voltageInput;
+    frozenCharge = c * sliderVoltage;
   }
+  const q = capacitorMode === "isolated" ? frozenCharge : c * effectiveVoltage;
+  const eField = effectiveVoltage / (distance / 1000);
 
-  const charge = capacitance * voltage;
-  const fieldStrength = voltage / (distance / 1000);
-  const fluxDensity = epsilonR * epsilon0 * fieldStrength;
-
-  $("capacitor-copy").textContent =
+  $("capacitance-value").textContent = engineering(c, "F");
+  $("charge-stored-value").textContent = engineering(q, "C");
+  $("field-strength-value").textContent = engineering(eField, "V/m");
+  $("cap-effective-voltage").textContent = fmt(effectiveVoltage, 2);
+  $("cap-mode-note").textContent =
     capacitorMode === "connected"
-      ? "Bei angeschlossener Quelle bleibt U konstant. Veraendert sich der Abstand, fliesst Ladung zur Quelle oder von ihr nach."
-      : "Im isolierten Fall bleibt Q konstant. Veraendert sich die Geometrie, muss sich die Spannung entsprechend aendern.";
+      ? "An der Quelle bleibt die Spannung konstant. Aenderst du d, fliesst Ladung zur Quelle oder von ihr weg."
+      : "Im isolierten Fall bleibt die Ladung konstant. Aenderst du d, muss sich die Spannung aendern.";
+  document.querySelectorAll(".cap-mode-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.capmode === capacitorMode);
+  });
 
-  $("capacitance-value").textContent = engineering(capacitance, "F");
-  $("charge-stored-value").textContent = engineering(charge, "C");
-  $("field-strength-value").textContent = engineering(fieldStrength, "V/m");
-  $("flux-density-value").textContent = engineering(fluxDensity, "C/m^2");
-
-  const dielectric = $("dielectric-block");
-  const width = Math.max(8, 40 - distance * 5);
-  dielectric.style.left = `${50 - width / 2}%`;
-  dielectric.style.right = `${50 - width / 2}%`;
-  dielectric.style.background =
-    epsilonR > 20 ? "rgba(114, 219, 143, 0.48)" : epsilonR > 3 ? "rgba(87, 208, 255, 0.35)" : "rgba(255, 255, 255, 0.14)";
-}
-
-function updateMagnetics() {
-  const turns = parseFloat($("coil-turns").value);
-  const current = parseFloat($("coil-current").value);
-  const core = parseFloat($("coil-core").value);
-  const v1 = parseFloat($("transformer-v1").value);
-  const n1 = parseFloat($("transformer-n1").value);
-  const n2 = parseFloat($("transformer-n2").value);
-  const hRelative = turns * current;
-  const bRelative = hRelative * core;
+  const turns = Number($("coil-turns").value);
+  const current = Number($("coil-current").value);
+  const core = Number($("coil-core").value);
+  const h = turns * current;
+  const b = h * core;
+  const v1 = Number($("transformer-v1").value);
+  const n1 = Number($("transformer-n1").value);
+  const n2 = Number($("transformer-n2").value);
   const v2 = v1 * n2 / n1;
-
-  $("coil-h-value").textContent = fmt(hRelative, 1);
-  $("coil-b-value").textContent = fmt(bRelative, 1);
+  $("coil-h-value").textContent = fmt(h, 1);
+  $("coil-b-value").textContent = fmt(b, 1);
   $("transformer-v2").textContent = fmt(v2, 1);
 
-  const canvas = $("magnet-chart");
-  const ctx = canvas.getContext("2d");
-  const width = canvas.width;
-  const height = canvas.height;
-  drawAxes(ctx, width, height, { x: "relativ", y: "Feld" });
+  const sensor = Number($("sensor-resistance").value);
+  const lead = Number($("lead-resistance").value);
+  const twoWire = sensor + 2 * lead;
+  $("two-wire-value").textContent = fmt(twoWire, 1);
+  $("four-wire-value").textContent = fmt(sensor, 1);
+  $("wire-temp-error").textContent = fmt((twoWire - sensor) / 0.385, 1);
 
-  const maxValue = Math.max(bRelative, hRelative, 1);
-  const hBarHeight = (hRelative / maxValue) * (height - 70);
-  const bBarHeight = (bRelative / maxValue) * (height - 70);
-
-  ctx.fillStyle = "#57d0ff";
-  ctx.fillRect(86, height - 28 - hBarHeight, 64, hBarHeight);
-  ctx.fillStyle = "#f4b54d";
-  ctx.fillRect(214, height - 28 - bBarHeight, 64, bBarHeight);
-  ctx.fillStyle = "rgba(231,241,245,0.8)";
-  ctx.fillText("H", 110, height - 8);
-  ctx.fillText("B", 238, height - 8);
+  const zenerIn = Number($("zener-input").value);
+  const zener = Number($("zener-voltage").value);
+  const zenerOut = Math.min(zenerIn, zener);
+  $("zener-in-display").textContent = fmt(zenerIn, 1);
+  $("zener-out-display").textContent = fmt(zenerOut, 1);
+  $("zener-input-bar").style.width = `${Math.min(100, zenerIn / 15 * 100)}%`;
+  $("zener-output-bar").style.width = `${Math.min(100, zenerOut / 15 * 100)}%`;
 }
 
+const cycleSteps = [
+  { title: "Eingaenge lesen", copy: "Sensorwerte werden von der Hardware eingelesen." },
+  { title: "Eingangsabbild", copy: "Die Werte werden fuer den laufenden Zyklus gespeichert." },
+  { title: "Programm", copy: "Das SPS-Programm arbeitet mit genau diesen gespeicherten Eingangswerten." },
+  { title: "Ausgangsabbild", copy: "Die berechneten Ergebnisse werden intern abgelegt." },
+  { title: "Ausgaenge schreiben", copy: "Erst jetzt werden reale Ausgaenge aktualisiert." }
+];
+
 function simulateControl(mode, setpoint, disturbance) {
-  let roomTemp = 18;
+  let room = 18;
   let ambient = 12;
-  let heaterCommand = 0.42;
+  let heater = 0.42;
   const points = [];
   for (let step = 0; step < 80; step += 1) {
-    if (step === 32) ambient -= disturbance;
+    if (step === 30) ambient -= disturbance;
     if (mode === "closed") {
-      const error = setpoint - roomTemp;
-      heaterCommand = Math.max(0, Math.min(1, 0.3 + error * 0.09));
+      const error = setpoint - room;
+      heater = clamp(0.32 + error * 0.09, 0, 1);
     }
-    const heaterTemp = heaterCommand * 38;
-    roomTemp += 0.12 * ((ambient + heaterTemp) - roomTemp);
-    points.push(roomTemp);
+    room += 0.12 * ((ambient + heater * 38) - room);
+    points.push(room);
   }
   return points;
 }
 
 function drawControlChart() {
-  const setpoint = parseFloat($("control-setpoint").value);
-  const disturbance = parseFloat($("control-disturbance").value);
-  const openLoop = simulateControl("open", setpoint, disturbance);
-  const closedLoop = simulateControl("closed", setpoint, disturbance);
+  const setpoint = Number($("control-setpoint").value);
+  const disturbance = Number($("control-disturbance").value);
+  const open = simulateControl("open", setpoint, disturbance);
+  const closed = simulateControl("closed", setpoint, disturbance);
+  $("open-loop-end").textContent = fmt(open.at(-1), 1);
+  $("closed-loop-end").textContent = fmt(closed.at(-1), 1);
+
   const canvas = $("control-chart");
   const ctx = canvas.getContext("2d");
   const width = canvas.width;
   const height = canvas.height;
-  drawAxes(ctx, width, height, { x: "Zeit", y: "Raumtemp" });
-
-  const minTemp = Math.min(...openLoop, ...closedLoop, setpoint - 2, 0);
-  const maxTemp = Math.max(...openLoop, ...closedLoop, setpoint + 2);
-  const scaleY = (temp) => height - 28 - ((temp - minTemp) / (maxTemp - minTemp)) * (height - 52);
-
-  ctx.setLineDash([5, 5]);
-  ctx.strokeStyle = "rgba(255,255,255,0.3)";
+  drawAxes(ctx, width, height, "Zeit", "Temp");
+  const min = Math.min(...open, ...closed, setpoint - 3);
+  const max = Math.max(...open, ...closed, setpoint + 3);
+  drawWaveform(ctx, width, height, open, "#b43a3a", min, max);
+  drawWaveform(ctx, width, height, closed, "#111111", min, max);
+  const scaleY = (v) => height - 30 - ((v - min) / (max - min)) * (height - 50);
+  ctx.setLineDash([6, 6]);
+  ctx.strokeStyle = "rgba(0,0,0,0.35)";
   ctx.beginPath();
-  ctx.moveTo(38, scaleY(setpoint));
-  ctx.lineTo(width - 12, scaleY(setpoint));
+  ctx.moveTo(40, scaleY(setpoint));
+  ctx.lineTo(width - 16, scaleY(setpoint));
   ctx.stroke();
   ctx.setLineDash([]);
-
-  const drawSeries = (series, color) => {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2.4;
-    ctx.beginPath();
-    series.forEach((value, index) => {
-      const x = 38 + index / (series.length - 1) * (width - 50);
-      const y = scaleY(value);
-      if (index === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-  };
-
-  drawSeries(openLoop, "#ff7b47");
-  drawSeries(closedLoop, "#57d0ff");
-
-  ctx.fillStyle = "rgba(231,241,245,0.8)";
-  ctx.fillText("Steuerung", width - 132, 24);
-  ctx.fillStyle = "#ff7b47";
-  ctx.fillRect(width - 176, 16, 28, 4);
-  ctx.fillStyle = "rgba(231,241,245,0.8)";
-  ctx.fillText("Regelung", width - 132, 44);
-  ctx.fillStyle = "#57d0ff";
-  ctx.fillRect(width - 176, 36, 28, 4);
-
-  $("open-loop-end").textContent = fmt(openLoop.at(-1), 1);
-  $("closed-loop-end").textContent = fmt(closedLoop.at(-1), 1);
 }
 
 function renderCycle() {
@@ -652,20 +1131,20 @@ function renderCycle() {
   $("cycle-copy").textContent = cycleSteps[cycleIndex].copy;
 }
 
-function nextCycleStep() {
+function nextCycle() {
   cycleIndex = (cycleIndex + 1) % cycleSteps.length;
   renderCycle();
 }
 
 function toggleCycleAuto() {
   if (cycleTimer) {
-    window.clearInterval(cycleTimer);
+    clearInterval(cycleTimer);
     cycleTimer = null;
-    $("cycle-auto-button").textContent = "Auto abspielen";
+    $("cycle-auto-button").textContent = "Auto";
     return;
   }
-  cycleTimer = window.setInterval(nextCycleStep, 1200);
-  $("cycle-auto-button").textContent = "Auto stoppen";
+  cycleTimer = setInterval(nextCycle, 1200);
+  $("cycle-auto-button").textContent = "Stop";
 }
 
 function renderQuiz() {
@@ -675,15 +1154,14 @@ function renderQuiz() {
   $("quiz-feedback").textContent = "";
   const container = $("quiz-options");
   container.innerHTML = "";
-
   item.options.forEach((option, index) => {
     const button = document.createElement("button");
-    button.type = "button";
     button.className = "quiz-option";
+    button.type = "button";
     button.textContent = option;
     button.addEventListener("click", () => {
-      const alreadyDone = [...container.children].some((child) => child.disabled);
-      if (alreadyDone) return;
+      const alreadyAnswered = [...container.children].some((child) => child.disabled);
+      if (alreadyAnswered) return;
       [...container.children].forEach((child) => {
         child.disabled = true;
       });
@@ -696,7 +1174,7 @@ function renderQuiz() {
         container.children[item.answer].classList.add("correct");
       }
       $("quiz-feedback").textContent = `${item.explanation} | Punktestand: ${quizScore}/${quizData.length}`;
-      window.setTimeout(() => {
+      setTimeout(() => {
         if (quizIndex < quizData.length - 1) {
           quizIndex += 1;
           renderQuiz();
@@ -705,9 +1183,9 @@ function renderQuiz() {
           $("quiz-question").textContent = `Fertig. Du hast ${quizScore} von ${quizData.length} Punkten erreicht.`;
           container.innerHTML = "";
           $("quiz-feedback").textContent =
-            quizScore >= 5
-              ? "Stark. Wiederhole jetzt nur noch die Formeln und die typischen Praxisfallen."
-              : "Gehe die Module noch einmal gezielt durch: LED/Freilauf, OPV-Gegenkopplung, Kondensatorfall an Quelle vs. getrennt und Steuerung vs. Regelung.";
+            quizScore >= 6
+              ? "Stark. Nutze jetzt noch das Schaltungs-Lab und das OPV-Studio fuer die Feinarbeit."
+              : "Gehe noch einmal gezielt durch: LED/Freilauf, Gegenkopplung, Bandluecke, Pull-up und Steuerung vs. Regelung.";
         }
       }, 1500);
     });
@@ -715,7 +1193,7 @@ function renderQuiz() {
   });
 }
 
-function bindEvents() {
+function bindFieldAndAutomation() {
   [
     "charge-carriers",
     "charge-time",
@@ -724,101 +1202,87 @@ function bindEvents() {
     "power-current",
     "source-uq",
     "source-ri",
-    "source-rl"
-  ].forEach((id) => $(id).addEventListener("input", updateFundamentals));
+    "source-rl",
+    "material-temperature",
+    "cap-area",
+    "cap-distance",
+    "cap-dielectric",
+    "cap-voltage",
+    "coil-turns",
+    "coil-current",
+    "coil-core",
+    "transformer-v1",
+    "transformer-n1",
+    "transformer-n2",
+    "sensor-resistance",
+    "lead-resistance",
+    "zener-input",
+    "zener-voltage",
+    "control-setpoint",
+    "control-disturbance"
+  ].forEach((id) => {
+    $(id).addEventListener("input", () => {
+      updateFieldLab();
+      drawControlChart();
+    });
+    $(id).addEventListener("change", () => {
+      updateFieldLab();
+      drawControlChart();
+    });
+  });
 
-  $("material-temperature").addEventListener("input", renderMaterial);
   document.querySelectorAll(".material-button").forEach((button) => {
     button.addEventListener("click", () => {
       activeMaterial = button.dataset.material;
       renderMaterial();
     });
   });
-
   document.querySelectorAll(".doping-button").forEach((button) => {
     button.addEventListener("click", () => {
       activeDoping = button.dataset.doping;
-      renderDoping();
+      renderMaterial();
     });
   });
 
-  ["led-supply", "led-color", "led-current"].forEach((id) => {
-    $(id).addEventListener("input", drawDiodeCurve);
-    $(id).addEventListener("change", drawDiodeCurve);
-  });
-
-  ["zener-input", "zener-voltage"].forEach((id) => $(id).addEventListener("input", updateZener));
-
-  document.querySelectorAll(".flyback-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      activeFlyback = button.dataset.flyback;
-      document.querySelectorAll(".flyback-button").forEach((item) => {
-        item.classList.toggle("active", item.dataset.flyback === activeFlyback);
-      });
-      drawFlyback();
-    });
-  });
-
-  ["sensor-resistance", "lead-resistance"].forEach((id) => $(id).addEventListener("input", updateMeasurement));
-
-  ["opamp-vin", "opamp-vref", "opamp-r1", "opamp-r2"].forEach((id) => $(id).addEventListener("input", updateOpamp));
-  document.querySelectorAll(".opamp-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      activeOpampMode = button.dataset.mode;
-      updateOpamp();
-    });
-  });
-
-  ["cap-area", "cap-distance", "cap-dielectric", "cap-voltage"].forEach((id) => {
-    $(id).addEventListener("input", updateCapacitor);
-    $(id).addEventListener("change", updateCapacitor);
-  });
-  document.querySelectorAll(".capacitor-mode").forEach((button) => {
+  document.querySelectorAll(".cap-mode-button").forEach((button) => {
     button.addEventListener("click", () => {
       const nextMode = button.dataset.capmode;
       if (nextMode === capacitorMode) return;
       if (nextMode === "isolated") {
-        const currentCap = computeCapacitance(
-          parseFloat($("cap-area").value),
-          parseFloat($("cap-distance").value),
-          parseFloat($("cap-dielectric").value)
-        );
-        frozenCharge = currentCap * parseFloat($("cap-voltage").value);
+        const area = Number($("cap-area").value);
+        const distance = Number($("cap-distance").value);
+        const er = Number($("cap-dielectric").value);
+        const voltage = Number($("cap-voltage").value);
+        frozenCharge = computeCapacitance(area, distance, er) * voltage;
       }
       if (nextMode === "connected") {
         frozenCharge = null;
       }
       capacitorMode = nextMode;
-      document.querySelectorAll(".capacitor-mode").forEach((item) => {
-        item.classList.toggle("active", item.dataset.capmode === capacitorMode);
-      });
-      updateCapacitor();
+      updateFieldLab();
     });
   });
 
-  ["coil-turns", "coil-current", "coil-core", "transformer-v1", "transformer-n1", "transformer-n2"].forEach((id) => {
-    $(id).addEventListener("input", updateMagnetics);
-    $(id).addEventListener("change", updateMagnetics);
-  });
-
-  ["control-setpoint", "control-disturbance"].forEach((id) => $(id).addEventListener("input", drawControlChart));
-  $("cycle-step-button").addEventListener("click", nextCycleStep);
+  $("cycle-step-button").addEventListener("click", nextCycle);
   $("cycle-auto-button").addEventListener("click", toggleCycleAuto);
 }
 
 function init() {
   setupJumpButtons();
-  bindEvents();
-  updateFundamentals();
-  renderMaterial();
-  renderDoping();
-  drawDiodeCurve();
-  updateZener();
-  drawFlyback();
-  updateMeasurement();
-  updateOpamp();
-  updateCapacitor();
-  updateMagnetics();
+  bindBuilder();
+  bindOPV();
+  bindFieldAndAutomation();
+  renderBuilderBoard();
+  setBuilderStatus(
+    "Bereit fuer die erste Schaltungsaufgabe.",
+    challengeData[activeChallenge].copy,
+    "Messwert A: -",
+    "Messwert B: -",
+    "Messwert C: -"
+  );
+  drawTopology();
+  drawDynamic();
+  updateFieldLab();
   drawControlChart();
   renderCycle();
   renderQuiz();

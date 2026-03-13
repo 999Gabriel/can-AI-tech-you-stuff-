@@ -3,111 +3,382 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Angewandte Mechatronik - Interactive Lab</title>
+    <title>Angewandte Mechatronik - Systems Lab</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="page-shell">
       <header class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Lesson 03 · Applied Mechatronics Lab</p>
-          <h1>Von Ladungstraegern bis zur SPS in einem interaktiven Systembild</h1>
+          <p class="eyebrow">Lesson 03 · Applied Mechatronics Systems Lab</p>
+          <h1>Mechatronik als System statt als Liste</h1>
           <p class="hero-text">
-            Diese Lektion verbindet Elektrotechnik, Elektronik, Messtechnik,
-            OPVs, Felder und Automatisierung in einer durchgehenden Lernumgebung.
-            Der Fokus liegt auf Verstehen, nicht auf Stichwortlisten:
-            Ursache, Wirkung, Kennlinie, Arbeitspunkt, Rueckkopplung und Praxisbezug.
+            Diese Ueberarbeitung geht deutlich tiefer: mehr Themenbreite, ein
+            interaktives Schaltungs-Labor mit Aufgabenmodus, ein ausgebautes OPV-Studio
+            und ein ruhigeres Schwarz-Weiss-Design mit Farbe nur dort, wo sie Information traegt.
           </p>
           <div class="hero-actions">
-            <button class="primary-button jump-button" data-target="lab-map" type="button">
-              Lernkarte oeffnen
+            <button class="primary-button jump-button" data-target="circuit-studio" type="button">
+              Direkt ins Schaltungs-Lab
             </button>
-            <button class="secondary-button jump-button" data-target="final-check" type="button">
-              Direkt zur Wiederholung
+            <button class="secondary-button jump-button" data-target="opamp-studio" type="button">
+              Direkt ins OPV-Studio
             </button>
           </div>
         </div>
-
-        <aside class="hero-panel card">
-          <p class="section-label">Prioritaeten</p>
-          <div class="metric-grid">
-            <div class="metric-card">
-              <span class="metric-value">Q, I, U, P</span>
-              <span class="metric-label">Grundgroessen</span>
-            </div>
-            <div class="metric-card">
-              <span class="metric-value">Leiter bis SPS</span>
-              <span class="metric-label">Roter Faden</span>
-            </div>
-            <div class="metric-card">
-              <span class="metric-value">Interaktiv</span>
-              <span class="metric-label">Rechner, Kurven, Diagramme</span>
-            </div>
+        <aside class="hero-side">
+          <div class="hero-stat">
+            <strong>3</strong>
+            <span>interaktive Schaltungsaufgaben</span>
+          </div>
+          <div class="hero-stat">
+            <strong>7</strong>
+            <span>OPV-Topologien und Dynamikmodi</span>
+          </div>
+          <div class="hero-stat">
+            <strong>10+</strong>
+            <span>Kernthemen aus dem Stoff</span>
           </div>
           <p class="hero-note">
-            Hinweis: Einige Visualisierungen sind bewusst schematisch. Wo absolute
-            Geometrie oder Materialdaten fehlen, werden relative oder vereinfachte
-            Modelle klar gekennzeichnet.
+            Wo Modelle vereinfacht werden, ist das kenntlich gemacht. Vereinfachung dient
+            hier dem Verstehen, nicht dem Verwischen physikalischer Zusammenhaenge.
           </p>
         </aside>
       </header>
 
+      <nav class="top-nav">
+        <button class="nav-chip jump-button" data-target="concept-atlas" type="button">Atlas</button>
+        <button class="nav-chip jump-button" data-target="circuit-studio" type="button">Schaltungen</button>
+        <button class="nav-chip jump-button" data-target="opamp-studio" type="button">OPVs</button>
+        <button class="nav-chip jump-button" data-target="field-lab" type="button">Felder & Bauteile</button>
+        <button class="nav-chip jump-button" data-target="automation" type="button">Automatisierung</button>
+        <button class="nav-chip jump-button" data-target="final-check" type="button">Pruefung</button>
+      </nav>
+
       <main>
-        <section class="lab-map card" id="lab-map">
+        <section class="card section" id="concept-atlas">
           <div class="section-heading">
-            <p class="section-label">Lernkarte</p>
-            <h2>Die mechatronische Gesamtsicht</h2>
+            <p class="section-label">Atlas</p>
+            <h2>Die Kernthemen in einem Bild</h2>
             <p>
-              Springe in das Modul, das du wiederholen willst. Die Reihenfolge
-              ist bewusst vom Fundament zur Anwendung aufgebaut.
+              Diese Karten sind absichtlich dicht. Sie geben dir die fachliche Landkarte,
+              bevor du in die eigentlichen Interaktionen gehst.
             </p>
           </div>
-          <div class="map-grid">
-            <button class="map-card jump-button" data-target="fundamentals" type="button">
-              <strong>01</strong>
-              <span>Q, I, U, P und reale Quellen</span>
-            </button>
-            <button class="map-card jump-button" data-target="materials" type="button">
-              <strong>02</strong>
-              <span>Leiter, Isolator, Halbleiter, Dotierung</span>
-            </button>
-            <button class="map-card jump-button" data-target="diodes" type="button">
-              <strong>03</strong>
-              <span>Dioden, LEDs, Zener, Freilauf</span>
-            </button>
-            <button class="map-card jump-button" data-target="measurement-opamp" type="button">
-              <strong>04</strong>
-              <span>Messtechnik und OPV-Prinzipien</span>
-            </button>
-            <button class="map-card jump-button" data-target="capacitors-fields" type="button">
-              <strong>05</strong>
-              <span>Kondensator, Felder, Magnetik, Trafo</span>
-            </button>
-            <button class="map-card jump-button" data-target="automation" type="button">
-              <strong>06</strong>
-              <span>Steuerung, Regelung und SPS-Zyklus</span>
-            </button>
+          <div class="atlas-grid">
+            <article class="atlas-card">
+              <h3>Q, I, U, P</h3>
+              <p>Q ist an Ladungstraeger gebunden. I = dQ/dt. U = dW/dQ. P = U · I.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Reale Quelle</h3>
+              <p>Uk = Uq - Ri · I. Innenwiderstand bestimmt Spannungsabfall, Arbeitspunkt und Leistungsanpassung.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Leiter / Isolator / Halbleiter</h3>
+              <p>Entscheidend ist die Zugaenglichkeit freier Zustande: ueberlappend, kleine Bandluecke oder grosse Bandluecke.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Dotierung</h3>
+              <p>5. Hauptgruppe -> n-Dotierung mit Elektronen; 3. Hauptgruppe -> p-Dotierung mit Loechern.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Dioden & LEDs</h3>
+              <p>Nicht ohmsch. Ab Schwellspannung steigt der Strom stark. LEDs brauchen Strombegrenzung.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Zener & Freilauf</h3>
+              <p>Zener begrenzt Spannung in Sperrrichtung. Freilaufdioden begrenzen Abschaltspitzen an Spulen.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>OPV-Regeln</h3>
+              <p>Ideal: Eingangsstrom ≈ 0, Verstärkung sehr gross, bei Gegenkopplung gilt oft U+ ≈ U-.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Kondensator</h3>
+              <p>C = er · e0 · A / d. An Quelle bleibt U konstant, isoliert bleibt Q konstant.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Spule & Induktion</h3>
+              <p>Stromaenderung erzeugt Gegeninduktion. Lenz bestimmt die Richtung. Darum steigt und faellt Spulenstrom nie sprunghaft.</p>
+            </article>
+            <article class="atlas-card">
+              <h3>Steuerung / Regelung / SPS</h3>
+              <p>Steuerung ist offen, Regelung hat Rueckfuehrung. SPS arbeitet zyklisch ueber Prozessabbilder.</p>
+            </article>
           </div>
         </section>
 
-        <section class="module card" id="fundamentals">
+        <section class="card section" id="circuit-studio">
           <div class="section-heading">
-            <p class="section-label">Modul 01</p>
-            <h2>Grundgroessen und reale Spannungsquellen</h2>
+            <p class="section-label">Schaltungs-Lab</p>
+            <h2>Baue Schaltungen selbst und beobachte den Strompfad</h2>
             <p>
-              Strom ist bewegte Ladung pro Zeit, Spannung ist Energie pro
-              Ladungsmenge, Leistung ist Energie pro Zeit. Hier kannst du diese
-              Beziehungen direkt manipulieren und sehen, wie sie zusammenhaengen.
+              Das ist kein Vollsimulator fuer beliebige Netzlisten, sondern ein
+              gefuehrtes Werkbank-Lab mit echten Aufgaben. Du setzt Bauteile in
+              die richtigen Positionen, simulierst und bekommst sofort die physikalische Rueckmeldung.
             </p>
           </div>
 
-          <div class="module-grid three-up">
-            <article class="panel">
-              <h3>Ladung und Strom</h3>
-              <p class="panel-copy">
-                1 Coulomb entspricht etwa 6,24 · 10^18 Elektronen. Veraendere
-                Anzahl und Zeit und beobachte, wie sich die Stromstaerke aendert.
+          <div class="studio-layout">
+            <article class="panel challenge-panel">
+              <div class="button-row">
+                <button class="task-button active challenge-button" data-challenge="led" type="button">
+                  Aufgabe 1 · LED
+                </button>
+                <button class="task-button challenge-button" data-challenge="coil" type="button">
+                  Aufgabe 2 · Relais / Spule
+                </button>
+                <button class="task-button challenge-button" data-challenge="pullup" type="button">
+                  Aufgabe 3 · Pull-up
+                </button>
+              </div>
+
+              <h3 id="challenge-title">Baue eine sichere 5-V-LED-Schaltung</h3>
+              <p class="panel-copy" id="challenge-copy">
+                Setze Schalter, Vorwiderstand und LED in den seriellen Strompfad.
+                Danach schliesse den Schalter und pruefe, ob der LED-Strom im sicheren Bereich liegt.
               </p>
+
+              <div class="palette-block">
+                <p class="mini-label">Bauteilpalette</p>
+                <div class="palette" id="component-palette">
+                  <button class="palette-item active" data-component="switch" type="button">Schalter</button>
+                  <button class="palette-item" data-component="resistor" type="button">Widerstand</button>
+                  <button class="palette-item" data-component="led" type="button">LED</button>
+                  <button class="palette-item" data-component="coil" type="button">Spule</button>
+                  <button class="palette-item" data-component="diode" type="button">Diode</button>
+                  <button class="palette-item" data-component="pushbutton" type="button">Taster</button>
+                  <button class="palette-item" data-component="clear" type="button">Loeschen</button>
+                </div>
+              </div>
+
+              <div class="challenge-controls">
+                <div class="control-group active" data-control="led">
+                  <label class="field">
+                    <span>Vorwiderstand in Ohm</span>
+                    <input id="builder-led-resistance" type="range" min="47" max="1000" step="1" value="150" />
+                  </label>
+                  <button id="builder-led-toggle" class="secondary-button" type="button">Schalter schliessen</button>
+                </div>
+                <div class="control-group" data-control="coil">
+                  <button id="builder-coil-toggle" class="secondary-button" type="button">Spule einschalten</button>
+                  <button id="builder-diode-orientation" class="secondary-button" type="button">Diodenlage: Freilauf</button>
+                </div>
+                <div class="control-group" data-control="pullup">
+                  <label class="field">
+                    <span>Pull-up-Widerstand in kOhm</span>
+                    <input id="builder-pullup-resistance" type="range" min="1" max="47" step="1" value="10" />
+                  </label>
+                  <button id="builder-button-toggle" class="secondary-button" type="button">Taster offen</button>
+                </div>
+              </div>
+
+              <div class="button-row">
+                <button id="builder-simulate" class="primary-button" type="button">Simulieren</button>
+                <button id="builder-reset" class="secondary-button" type="button">Aufgabe zuruecksetzen</button>
+              </div>
+            </article>
+
+            <article class="panel board-panel">
+              <div class="challenge-board active" id="board-led">
+                <div class="board-label">5-V-Serienschaltung</div>
+                <div class="board-supply left">+5 V</div>
+                <div class="board-supply right">0 V</div>
+                <div class="wire h" id="led-wire-top-left"></div>
+                <div class="wire h" id="led-wire-top-mid"></div>
+                <div class="wire h" id="led-wire-top-right"></div>
+                <div class="wire v" id="led-wire-down-right"></div>
+                <div class="wire h" id="led-wire-bottom"></div>
+                <button class="board-slot" id="slot-led-switch" data-slot="switch">Slot A</button>
+                <button class="board-slot" id="slot-led-series" data-slot="series">Slot B</button>
+                <button class="board-slot" id="slot-led-load" data-slot="load">Slot C</button>
+              </div>
+
+              <div class="challenge-board" id="board-coil">
+                <div class="board-label">DC-Spule mit Abschaltfall</div>
+                <div class="board-supply left">+12 V</div>
+                <div class="board-supply right">0 V</div>
+                <div class="wire h" id="coil-wire-top-left"></div>
+                <div class="wire h" id="coil-wire-top-mid"></div>
+                <div class="wire h" id="coil-wire-top-right"></div>
+                <div class="wire v" id="coil-wire-right"></div>
+                <div class="wire h" id="coil-wire-bottom"></div>
+                <div class="wire v" id="coil-wire-left"></div>
+                <div class="wire branch-top" id="coil-wire-branch-top"></div>
+                <div class="wire branch-bottom" id="coil-wire-branch-bottom"></div>
+                <button class="board-slot" id="slot-coil-switch" data-slot="switch">Slot A</button>
+                <button class="board-slot" id="slot-coil-load" data-slot="load">Slot B</button>
+                <button class="board-slot parallel" id="slot-coil-parallel" data-slot="parallel">Parallel</button>
+              </div>
+
+              <div class="challenge-board" id="board-pullup">
+                <div class="board-label">Digitaler Eingang mit Pull-up</div>
+                <div class="board-supply left">+5 V</div>
+                <div class="board-supply right">GND</div>
+                <div class="wire v" id="pullup-wire-top"></div>
+                <div class="wire h" id="pullup-wire-node"></div>
+                <div class="wire v" id="pullup-wire-bottom"></div>
+                <div class="input-node" id="pullup-input-node">MCU IN</div>
+                <button class="board-slot tall" id="slot-pullup-top" data-slot="top">nach VCC</button>
+                <button class="board-slot tall" id="slot-pullup-bottom" data-slot="bottom">nach GND</button>
+              </div>
+            </article>
+
+            <article class="panel status-panel">
+              <h3>Simulationsstatus</h3>
+              <p class="panel-copy" id="builder-status">
+                Noch keine Simulation. Setze zuerst Bauteile in die Slots und starte dann die Aufgabe.
+              </p>
+              <div class="formula-box">
+                <div id="builder-detail">Erwartung: geschlossener Stromkreis mit richtiger Schutz- oder Bias-Beschaltung.</div>
+                <div id="builder-metric-a">Messwert A: -</div>
+                <div id="builder-metric-b">Messwert B: -</div>
+                <div id="builder-metric-c">Messwert C: -</div>
+              </div>
+              <div class="completion-box">
+                <span class="mini-label">Fortschritt</span>
+                <strong id="challenge-progress">0 / 3 Aufgaben korrekt</strong>
+              </div>
+              <p class="micro-note">
+                Die Strompfade werden im Board hell markiert. Gruen bedeutet sauberer Betrieb,
+                rot markiert einen Fehlzustand oder eine gefaehrliche Beschaltung.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="card section" id="opamp-studio">
+          <div class="section-heading">
+            <p class="section-label">OPV-Studio</p>
+            <h2>Vergleicher, Verstaerker, Schmitt-Trigger, Integrator und Peak-Detektor</h2>
+            <p>
+              Dieser Teil ist absichtlich tiefer als der Rest. OPVs werden hier in
+              linearem Betrieb, Schaltbetrieb und dynamischem Signalbetrieb getrennt betrachtet.
+            </p>
+          </div>
+
+          <div class="opv-quick-rules">
+            <div class="rule-card">
+              <strong>Idealer Eingang</strong>
+              <span>Eingangsstrom ≈ 0, daher fliessen Stroeme durch die externen Netzwerke.</span>
+            </div>
+            <div class="rule-card">
+              <strong>Gegenkopplung</strong>
+              <span>Im linearen Betrieb regelt der OPV so, dass U+ und U- nahezu gleich werden.</span>
+            </div>
+            <div class="rule-card">
+              <strong>Saettigung</strong>
+              <span>Ohne passende Rueckkopplung geht der Ausgang sehr schnell an die Versorgungsschienen.</span>
+            </div>
+            <div class="rule-card">
+              <strong>Hysterese</strong>
+              <span>Mitkopplung erzeugt zwei Schaltschwellen und macht verrauschte Schaltpunkte robust.</span>
+            </div>
+          </div>
+
+          <div class="studio-layout opamp-layout">
+            <article class="panel">
+              <div class="button-row">
+                <button class="task-button active topology-button" data-topology="comparator" type="button">
+                  Vergleicher
+                </button>
+                <button class="task-button topology-button" data-topology="inverting" type="button">
+                  invertierend
+                </button>
+                <button class="task-button topology-button" data-topology="noninverting" type="button">
+                  nichtinvertierend
+                </button>
+                <button class="task-button topology-button" data-topology="follower" type="button">
+                  Follower
+                </button>
+                <button class="task-button topology-button" data-topology="difference" type="button">
+                  Differenz
+                </button>
+              </div>
+              <h3 id="opv-topology-title">Vergleicher ohne Gegenkopplung</h3>
+              <p class="panel-copy" id="opv-topology-copy"></p>
+              <label class="field">
+                <span>Signal A / Vin in V</span>
+                <input id="opv-a" type="range" min="-10" max="10" step="0.1" value="2" />
+              </label>
+              <label class="field">
+                <span>Signal B / Referenz in V</span>
+                <input id="opv-b" type="range" min="-10" max="10" step="0.1" value="0" />
+              </label>
+              <label class="field">
+                <span>R1 in kOhm</span>
+                <input id="opv-r1" type="range" min="1" max="100" step="1" value="10" />
+              </label>
+              <label class="field">
+                <span>R2 in kOhm</span>
+                <input id="opv-r2" type="range" min="1" max="220" step="1" value="47" />
+              </label>
+              <div class="formula-box">
+                <div id="opv-topology-formula">Wenn Vin > Vref, saettigt der Ausgang positiv.</div>
+                <div id="opv-topology-output">Uout = +12.0 V</div>
+                <div id="opv-topology-extra">Hinweis: linearer Bereich ohne Gegenkopplung ist praktisch winzig.</div>
+              </div>
+              <div class="opv-schematic" id="opv-schematic">
+                <div class="opv-triangle">OPV</div>
+                <div class="opv-text" id="opv-schematic-text">Grosse Leerlaufverstaerkung -> Schaltverhalten</div>
+              </div>
+              <canvas id="opv-topology-chart" class="chart" width="420" height="240"></canvas>
+            </article>
+
+            <article class="panel">
+              <div class="button-row">
+                <button class="task-button active dynamic-button" data-dynamic="schmitt" type="button">
+                  Schmitt
+                </button>
+                <button class="task-button dynamic-button" data-dynamic="integrator" type="button">
+                  Integrator
+                </button>
+                <button class="task-button dynamic-button" data-dynamic="peak" type="button">
+                  Peak-Detektor
+                </button>
+              </div>
+              <h3 id="opv-dynamic-title">Schmitt-Trigger mit Hysterese</h3>
+              <p class="panel-copy" id="opv-dynamic-copy"></p>
+              <label class="field">
+                <span>Amplitude / Stoerungssignal</span>
+                <input id="opv-dyn-amplitude" type="range" min="0.5" max="6" step="0.1" value="2.5" />
+              </label>
+              <label class="field">
+                <span>Frequenzindex</span>
+                <input id="opv-dyn-frequency" type="range" min="1" max="10" step="1" value="4" />
+              </label>
+              <label class="field">
+                <span>R bzw. Schwellparameter</span>
+                <input id="opv-dyn-r" type="range" min="1" max="100" step="1" value="22" />
+              </label>
+              <label class="field">
+                <span>C bzw. Hysteresebreite</span>
+                <input id="opv-dyn-c" type="range" min="1" max="100" step="1" value="33" />
+              </label>
+              <div class="formula-box">
+                <div id="opv-dynamic-formula">Zwei getrennte Schaltschwellen stabilisieren das Ausgangssignal.</div>
+                <div id="opv-dynamic-output">Ausgangszustand: HIGH</div>
+                <div id="opv-dynamic-extra">Typischer Einsatz: Entprellung, verrauschte Sensorsignale, saubere Digitalkanten.</div>
+              </div>
+              <canvas id="opv-dynamic-chart" class="chart" width="420" height="240"></canvas>
+            </article>
+          </div>
+        </section>
+
+        <section class="card section" id="field-lab">
+          <div class="section-heading">
+            <p class="section-label">Felder & Bauteile</p>
+            <h2>Von Elementarladung ueber Bandmodell bis zur Feldenergie</h2>
+            <p>
+              Dieser Block verbindet die Grundlagen wieder mit den Bauteilen.
+              Er ist kompakter als das OPV-Studio, aber bewusst breiter.
+            </p>
+          </div>
+
+          <div class="triple-grid">
+            <article class="panel">
+              <h3>Q, I, U, P und Quelle</h3>
               <label class="field">
                 <span>Elektronenmenge in 10^18</span>
                 <input id="charge-carriers" type="range" min="0.5" max="8" step="0.1" value="6.24" />
@@ -116,62 +387,26 @@
                 <span>Zeit in s</span>
                 <input id="charge-time" type="range" min="0.1" max="5" step="0.1" value="1" />
               </label>
-              <div class="formula-box">
-                <div>Q = <span id="charge-value">1.00</span> C</div>
-                <div>I = <span id="current-value">1.00</span> A</div>
-              </div>
-              <div class="flow-tube">
-                <div class="flow-arrow">technische Stromrichtung</div>
-                <div class="charge-stream" id="charge-stream">
-                  <span></span><span></span><span></span><span></span><span></span><span></span>
-                </div>
-              </div>
-              <p class="trap-note">
-                Strom ist nicht Spannung und nicht direkt Energiefluss. Strom sagt nur,
-                wie viel Ladung pro Sekunde bewegt wird.
-              </p>
-            </article>
-
-            <article class="panel">
-              <h3>Spannung und Leistung</h3>
-              <p class="panel-copy">
-                Spannung ist Arbeit pro Ladungsmenge. Leistung ergibt sich aus
-                Spannung und Strom: P = U · I.
-              </p>
               <label class="field">
                 <span>Arbeit W in J</span>
                 <input id="work-input" type="range" min="0.5" max="24" step="0.5" value="12" />
               </label>
               <label class="field">
-                <span>Bewegte Ladung Q in C</span>
+                <span>Ladung Q fuer Spannung in C</span>
                 <input id="voltage-charge" type="range" min="0.1" max="6" step="0.1" value="2" />
               </label>
               <label class="field">
-                <span>Strom fuer Leistungsrechnung in A</span>
+                <span>Laststrom in A</span>
                 <input id="power-current" type="range" min="0.1" max="5" step="0.1" value="1.5" />
               </label>
               <div class="formula-box">
+                <div>Q = <span id="charge-value">1.00</span> C</div>
+                <div>I = <span id="current-value">1.00</span> A</div>
                 <div>U = <span id="voltage-value">6.00</span> V</div>
                 <div>P = <span id="power-value">9.00</span> W</div>
               </div>
-              <div class="energy-stack">
-                <div class="energy-bar" id="voltage-bar"></div>
-                <div class="energy-bar power" id="power-bar"></div>
-              </div>
-              <p class="trap-note">
-                Spannung ist immer zwischen zwei Punkten definiert. Es gibt keine
-                "Spannung an einem Punkt allein".
-              </p>
-            </article>
-
-            <article class="panel">
-              <h3>Reale Quelle mit Innenwiderstand</h3>
-              <p class="panel-copy">
-                Jede reale Spannungsquelle hat einen Innenwiderstand. Dadurch sinkt
-                die Klemmenspannung unter Last.
-              </p>
               <label class="field">
-                <span>Ideale Quellspannung Uq in V</span>
+                <span>Quellspannung Uq in V</span>
                 <input id="source-uq" type="range" min="1" max="24" step="0.5" value="12" />
               </label>
               <label class="field">
@@ -183,342 +418,85 @@
                 <input id="source-rl" type="range" min="0.2" max="20" step="0.1" value="1" />
               </label>
               <div class="formula-box">
-                <div>I = <span id="source-current">6.00</span> A</div>
                 <div>Uk = <span id="source-terminal">6.00</span> V</div>
+                <div>IQuelle = <span id="source-current">6.00</span> A</div>
                 <div>PLast = <span id="source-power">36.00</span> W</div>
               </div>
-              <div class="source-diagram">
-                <div class="source-block">Uq</div>
-                <div class="resistor-block small">Ri</div>
-                <div class="resistor-block">RL</div>
-              </div>
-              <p class="trap-note" id="source-match-note">
-                Bei RL = Ri liegt Leistungsanpassung vor. Das liefert maximale Lastleistung,
-                ist aber energetisch nicht immer sinnvoll.
-              </p>
             </article>
-          </div>
-        </section>
 
-        <section class="module card" id="materials">
-          <div class="section-heading">
-            <p class="section-label">Modul 02</p>
-            <h2>Leiter, Isolatoren, Halbleiter und Dotierung</h2>
-            <p>
-              Dasselbe physikalische Thema kann als Potentialtopf oder als
-              Bandstruktur gelesen werden. Dieses Modul verbindet beide Darstellungen.
-            </p>
-          </div>
-
-          <div class="module-grid two-up">
             <article class="panel">
               <div class="button-row">
-                <button class="toggle-button active material-button" data-material="conductor" type="button">
+                <button class="task-button active material-button" data-material="conductor" type="button">
                   Leiter
                 </button>
-                <button class="toggle-button material-button" data-material="semiconductor" type="button">
+                <button class="task-button material-button" data-material="semiconductor" type="button">
                   Halbleiter
                 </button>
-                <button class="toggle-button material-button" data-material="insulator" type="button">
+                <button class="task-button material-button" data-material="insulator" type="button">
                   Isolator
                 </button>
               </div>
-              <h3 id="material-title">Leiter: freie Elektronen zwischen den Atomen</h3>
+              <h3 id="material-title">Leiter</h3>
               <p class="panel-copy" id="material-copy"></p>
               <label class="field">
                 <span>Temperaturindex</span>
                 <input id="material-temperature" type="range" min="0" max="100" step="1" value="40" />
               </label>
-
-              <div class="well-band-layout">
-                <div class="well-visual" id="well-visual">
-                  <div class="well-wall left"></div>
-                  <div class="well-floor"></div>
-                  <div class="well-wall right"></div>
-                  <div class="electron-level" id="electron-level"></div>
-                </div>
-                <div class="band-visual">
-                  <div class="band conduction" id="conduction-band">Leitungsband</div>
-                  <div class="band-gap" id="band-gap">Bandluecke</div>
-                  <div class="band valence">Valenzband</div>
-                </div>
+              <div class="band-stack">
+                <div class="band conduction" id="band-conduction">Leitungsband</div>
+                <div class="band-gap" id="band-gap">Bandluecke</div>
+                <div class="band valence">Valenzband</div>
               </div>
-
               <div class="formula-box">
-                <div>Bandmodell: <span id="band-summary">praktisch ueberlappend</span></div>
+                <div>Qualitatives Bandbild: <span id="band-summary">ueberlappend</span></div>
                 <div>Leitfaehigkeitstrend: <span id="conductivity-summary">hoch</span></div>
               </div>
-              <p class="micro-note">
-                Vereinfachtes Energiebild: qualitativ korrekt, nicht als exakte
-                numerische Bandstruktur zu lesen.
-              </p>
-            </article>
-
-            <article class="panel">
               <div class="button-row">
-                <button class="toggle-button active doping-button" data-doping="intrinsic" type="button">
+                <button class="task-button active doping-button" data-doping="intrinsic" type="button">
                   intrinsisch
                 </button>
-                <button class="toggle-button doping-button" data-doping="n" type="button">
-                  n-Dotierung
+                <button class="task-button doping-button" data-doping="n" type="button">
+                  n
                 </button>
-                <button class="toggle-button doping-button" data-doping="p" type="button">
-                  p-Dotierung
+                <button class="task-button doping-button" data-doping="p" type="button">
+                  p
                 </button>
-              </div>
-              <h3 id="doping-title">Reiner Halbleiter</h3>
-              <p class="panel-copy" id="doping-copy"></p>
-              <div class="carrier-display">
-                <div class="carrier-column">
-                  <span class="carrier-label">Elektronen</span>
-                  <div class="carrier-row" id="electron-row"></div>
-                </div>
-                <div class="carrier-column">
-                  <span class="carrier-label">Loecher</span>
-                  <div class="carrier-row holes" id="hole-row"></div>
-                </div>
               </div>
               <div class="formula-box">
+                <div id="doping-title">Reiner Halbleiter</div>
+                <div id="doping-copy">Elektronen und Loecher entstehen paarweise.</div>
                 <div>Mehrheitstraeger: <span id="majority-carrier">keine Dominanz</span></div>
-                <div>Typische Folge: <span id="device-hint">Basis fuer pn-Uebergaenge</span></div>
               </div>
-              <p class="trap-note">
-                n-Dotierung bedeutet nicht "negativer Kristall". Es bedeutet:
-                es gibt zusaetzliche freie Elektronen als Mehrheitstraeger.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section class="module card" id="diodes">
-          <div class="section-heading">
-            <p class="section-label">Modul 03</p>
-            <h2>Dioden, LEDs, Zenerdioden und Freilauf</h2>
-            <p>
-              Hier geht es um Kennlinien und um Praxisschaltungen. Besonders
-              wichtig: Eine LED ist kein ohmscher Widerstand, und eine Spule
-              will beim Abschalten weiter Strom treiben.
-            </p>
-          </div>
-
-          <div class="module-grid three-up">
-            <article class="panel">
-              <h3>LED-Vorwiderstand</h3>
-              <p class="panel-copy">
-                Berechne den notwendigen Vorwiderstand mit
-                R = (U0 - UD) / I.
-              </p>
-              <label class="field">
-                <span>Versorgung U0 in V</span>
-                <input id="led-supply" type="range" min="3" max="24" step="0.5" value="5" />
-              </label>
-              <label class="field">
-                <span>LED-Farbe</span>
-                <select id="led-color">
-                  <option value="1.8">rot · 1.8 V</option>
-                  <option value="2.2" selected>gelb/gruen · 2.2 V</option>
-                  <option value="3.4">blau · 3.4 V</option>
-                  <option value="3.6">weiss · 3.6 V</option>
-                </select>
-              </label>
-              <label class="field">
-                <span>Strom in mA</span>
-                <input id="led-current" type="range" min="1" max="30" step="1" value="20" />
-              </label>
-              <div class="formula-box">
-                <div>UD = <span id="led-forward">2.20</span> V</div>
-                <div>RV = <span id="led-resistor">140</span> Ohm</div>
-                <div>PR = <span id="led-power-loss">0.06</span> W</div>
-              </div>
-              <canvas id="diode-curve" width="360" height="220" class="chart"></canvas>
-              <p class="trap-note" id="led-note">
-                Kleine Spannungszunahme an der Diode kann grossen Stromanstieg bedeuten.
-                Deshalb braucht die LED Strombegrenzung.
-              </p>
             </article>
 
             <article class="panel">
-              <h3>Zener-Spannungsbegrenzung</h3>
-              <p class="panel-copy">
-                Eine Zenerdiode wird in Sperrrichtung betrieben und begrenzt
-                ab ihrer Zenerspannung die Ausgangsspannung.
-              </p>
-              <label class="field">
-                <span>Eingangsspannung in V</span>
-                <input id="zener-input" type="range" min="0" max="15" step="0.1" value="7.5" />
-              </label>
-              <label class="field">
-                <span>Zenerspannung in V</span>
-                <input id="zener-voltage" type="range" min="3.3" max="12" step="0.1" value="5.1" />
-              </label>
-              <div class="formula-box">
-                <div>Eingang = <span id="zener-in-display">7.5</span> V</div>
-                <div>Ausgang begrenzt auf = <span id="zener-out-display">5.1</span> V</div>
-              </div>
-              <div class="clamp-visual">
-                <div class="clamp-bar input" id="zener-input-bar"></div>
-                <div class="clamp-bar output" id="zener-output-bar"></div>
-              </div>
-              <p class="micro-note">
-                Vereinfachtes Reglerbild: Die reale Zenerkennlinie ist nicht ideal
-                senkrecht, aber der Begrenzungseffekt wird hier korrekt gezeigt.
-              </p>
-            </article>
-
-            <article class="panel">
+              <h3>Kondensator und Magnetik</h3>
               <div class="button-row">
-                <button class="toggle-button active flyback-button" data-flyback="with" type="button">
-                  mit Freilaufdiode
-                </button>
-                <button class="toggle-button flyback-button" data-flyback="without" type="button">
-                  ohne Freilaufdiode
-                </button>
-              </div>
-              <h3>Abschalten einer Spule</h3>
-              <p class="panel-copy" id="flyback-copy"></p>
-              <canvas id="flyback-chart" width="360" height="220" class="chart"></canvas>
-              <div class="formula-box">
-                <div>Strompfad nach Abschalten: <span id="flyback-path">Spule -> Diode -> Spule</span></div>
-                <div>Spitzenspannung: <span id="flyback-spike">niedrig</span></div>
-              </div>
-              <p class="trap-note">
-                Merksatz fuer die Praxis: Jede DC-Spule braucht gedanklich eine
-                Freilaufdiode, wenn sie nicht im Modul bereits integriert ist.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section class="module card" id="measurement-opamp">
-          <div class="section-heading">
-            <p class="section-label">Modul 04</p>
-            <h2>Messtechnik und Operationsverstaerker</h2>
-            <p>
-              Dieses Modul zeigt zwei typische Verstaendnisbruecken:
-              Messfehler durch Leitungswiderstand und OPVs als Regler, Verstaerker,
-              Puffer oder Schaltschwelle mit Hysterese.
-            </p>
-          </div>
-
-          <div class="module-grid two-up">
-            <article class="panel">
-              <h3>Zwei- gegen Vierdrahtmessung</h3>
-              <p class="panel-copy">
-                Lange Leitungen verfälschen besonders bei kleinen Sensorwiderstaenden
-                die Messung. Das Vierdrahtverfahren trennt Strompfad und Spannungsmessung.
-              </p>
-              <label class="field">
-                <span>Sensorwiderstand in Ohm</span>
-                <input id="sensor-resistance" type="range" min="80" max="160" step="0.5" value="100" />
-              </label>
-              <label class="field">
-                <span>Leitungswiderstand pro Leitung in Ohm</span>
-                <input id="lead-resistance" type="range" min="0" max="8" step="0.1" value="2" />
-              </label>
-              <div class="formula-box">
-                <div>2-Draht misst = <span id="two-wire-value">104.0</span> Ohm</div>
-                <div>4-Draht misst = <span id="four-wire-value">100.0</span> Ohm</div>
-                <div>Fehler als PT100-Temperatur = <span id="wire-temp-error">10.4</span> K</div>
-              </div>
-              <div class="wiring-visual">
-                <div class="wire-branch">I</div>
-                <div class="sensor-core">RTD</div>
-                <div class="wire-branch sense">U</div>
-              </div>
-              <p class="trap-note">
-                Das Voltmeter zieht idealerweise fast keinen Strom. Genau deshalb
-                faellt an den Spannungsmessleitungen praktisch keine zusaetzliche
-                Spannung ab.
-              </p>
-            </article>
-
-            <article class="panel">
-              <div class="button-row">
-                <button class="toggle-button active opamp-button" data-mode="comparator" type="button">
-                  Vergleicher
-                </button>
-                <button class="toggle-button opamp-button" data-mode="inverting" type="button">
-                  invertierend
-                </button>
-                <button class="toggle-button opamp-button" data-mode="follower" type="button">
-                  Spannungsfolger
-                </button>
-                <button class="toggle-button opamp-button" data-mode="schmitt" type="button">
-                  Schmitt-Trigger
-                </button>
-              </div>
-              <h3 id="opamp-title">Vergleicher ohne Gegenkopplung</h3>
-              <p class="panel-copy" id="opamp-copy"></p>
-              <label class="field">
-                <span>Eingang Vin in V</span>
-                <input id="opamp-vin" type="range" min="-10" max="10" step="0.1" value="1.5" />
-              </label>
-              <label class="field">
-                <span>Referenz / nichtinvertierender Pfad in V</span>
-                <input id="opamp-vref" type="range" min="-10" max="10" step="0.1" value="0" />
-              </label>
-              <label class="field">
-                <span>R1 oder Schwellparameter</span>
-                <input id="opamp-r1" type="range" min="1" max="100" step="1" value="10" />
-              </label>
-              <label class="field">
-                <span>R2 oder Hysteresebreite</span>
-                <input id="opamp-r2" type="range" min="1" max="100" step="1" value="47" />
-              </label>
-              <div class="formula-box">
-                <div>Uout = <span id="opamp-output">+12.0</span> V</div>
-                <div id="opamp-formula">Wenn U+ > U-, geht der Ausgang in positive Saettigung.</div>
-              </div>
-              <div class="opamp-visual">
-                <div class="triangle">OPV</div>
-                <div class="opamp-output-bar" id="opamp-output-bar"></div>
-              </div>
-              <p class="micro-note" id="opamp-note">
-                Beim idealen OPV gilt: sehr hoher Eingangswiderstand, sehr hohe
-                Leerlaufverstaerkung, vernachlaessigbarer Eingangsstrom.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section class="module card" id="capacitors-fields">
-          <div class="section-heading">
-            <p class="section-label">Modul 05</p>
-            <h2>Kondensator, Felder, Magnetik und Transformator</h2>
-            <p>
-              In diesem Modul verbindest du Geometrie, Dielektrikum und gespeicherte
-              Ladung direkt mit den Formeln. Dazu kommen Magnetfeld, Kernmaterial
-              und die ideale Trafo-Uebersetzung.
-            </p>
-          </div>
-
-          <div class="module-grid two-up">
-            <article class="panel">
-              <div class="button-row">
-                <button class="toggle-button active capacitor-mode" data-capmode="connected" type="button">
+                <button class="task-button active cap-mode-button" data-capmode="connected" type="button">
                   an Quelle
                 </button>
-                <button class="toggle-button capacitor-mode" data-capmode="isolated" type="button">
-                  getrennt
+                <button class="task-button cap-mode-button" data-capmode="isolated" type="button">
+                  isoliert
                 </button>
               </div>
-              <h3>Kondensator-Labor</h3>
-              <p class="panel-copy" id="capacitor-copy"></p>
+              <p class="micro-note" id="cap-mode-note">
+                An der Quelle bleibt die Spannung konstant.
+              </p>
               <label class="field">
-                <span>Plattenflaeche A in cm^2</span>
+                <span>Flaeche A in cm^2</span>
                 <input id="cap-area" type="range" min="10" max="400" step="5" value="100" />
               </label>
               <label class="field">
-                <span>Plattenabstand d in mm</span>
+                <span>Abstand d in mm</span>
                 <input id="cap-distance" type="range" min="0.1" max="5" step="0.1" value="1" />
               </label>
               <label class="field">
                 <span>Dielektrikum</span>
                 <select id="cap-dielectric">
-                  <option value="1">Luft · er ≈ 1</option>
-                  <option value="3.2">Papier · er ≈ 3.2</option>
-                  <option value="5">Glas · er ≈ 5</option>
-                  <option value="80">Wasser · er ≈ 80</option>
+                  <option value="1">Luft</option>
+                  <option value="3.2">Papier</option>
+                  <option value="5">Glas</option>
+                  <option value="80">Wasser</option>
                 </select>
               </label>
               <label class="field">
@@ -526,29 +504,11 @@
                 <input id="cap-voltage" type="range" min="1" max="100" step="1" value="12" />
               </label>
               <div class="formula-box">
-                <div>C = <span id="capacitance-value">8.85</span> pF</div>
-                <div>Q = <span id="charge-stored-value">106.20</span> pC</div>
-                <div>E = <span id="field-strength-value">12000</span> V/m</div>
-                <div>D = <span id="flux-density-value">1.06e-7</span> C/m^2</div>
+                <div>C = <span id="capacitance-value">8.85 pF</span></div>
+                <div>Q = <span id="charge-stored-value">106.20 pC</span></div>
+                <div>E = <span id="field-strength-value">12000 V/m</span></div>
+                <div>U effektiv = <span id="cap-effective-voltage">12.00</span> V</div>
               </div>
-              <div class="capacitor-visual">
-                <div class="plate left-plate"></div>
-                <div class="dielectric-block" id="dielectric-block"></div>
-                <div class="plate right-plate"></div>
-              </div>
-              <p class="trap-note">
-                An der Quelle bleibt U konstant. Im isolierten Fall bleibt Q konstant.
-                Genau daran haengt, was beim Auseinanderziehen der Platten passiert.
-              </p>
-            </article>
-
-            <article class="panel">
-              <h3>Magnetfeld und Transformator</h3>
-              <p class="panel-copy">
-                Das Spulenfeld stammt aus bewegten Ladungen. Ein Eisenkern erhoeht
-                die magnetische Flussdichte stark. Beim idealen Trafo gilt
-                V2/V1 = N2/N1.
-              </p>
               <label class="field">
                 <span>Windungszahl N</span>
                 <input id="coil-turns" type="range" min="10" max="400" step="10" value="120" />
@@ -560,8 +520,8 @@
               <label class="field">
                 <span>Kernmaterial</span>
                 <select id="coil-core">
-                  <option value="1">Luftkern</option>
-                  <option value="80">Weicheisenkern</option>
+                  <option value="1">Luft</option>
+                  <option value="80">Weicheisen</option>
                 </select>
               </label>
               <label class="field">
@@ -577,115 +537,134 @@
                 <input id="transformer-n2" type="range" min="10" max="400" step="10" value="200" />
               </label>
               <div class="formula-box">
-                <div>Relatives H-Feld = <span id="coil-h-value">144.0</span></div>
-                <div>Relatives B-Feld = <span id="coil-b-value">144.0</span></div>
-                <div>Ideale Sekundaerspannung V2 = <span id="transformer-v2">24.0</span> V</div>
+                <div>relatives H = <span id="coil-h-value">144.0</span></div>
+                <div>relatives B = <span id="coil-b-value">144.0</span></div>
+                <div>V2 ideal = <span id="transformer-v2">24.0</span> V</div>
               </div>
-              <canvas id="magnet-chart" width="360" height="220" class="chart"></canvas>
-              <p class="micro-note">
-                H und B werden hier relativ gezeigt, weil die Geometrie der Spule
-                nicht vollstaendig parametrisiert ist. Die Wirkungsrichtung ist
-                fachlich korrekt: Kernmaterial erhoeht B deutlich.
+            </article>
+          </div>
+
+          <div class="double-grid supplement-grid">
+            <article class="panel">
+              <h3>Zwei- gegen Vierdrahtmessung</h3>
+              <p class="panel-copy">
+                Lange Leitungen verfälschen kleine Widerstaende. Bei 4-Draht trennt
+                man Strompfad und Spannungsmessung.
               </p>
+              <label class="field">
+                <span>Sensorwiderstand in Ohm</span>
+                <input id="sensor-resistance" type="range" min="80" max="160" step="0.5" value="100" />
+              </label>
+              <label class="field">
+                <span>Leitungswiderstand pro Leitung in Ohm</span>
+                <input id="lead-resistance" type="range" min="0" max="8" step="0.1" value="2" />
+              </label>
+              <div class="formula-box">
+                <div>2-Draht misst = <span id="two-wire-value">104.0</span> Ohm</div>
+                <div>4-Draht misst = <span id="four-wire-value">100.0</span> Ohm</div>
+                <div>Fehler als PT100-Temperatur = <span id="wire-temp-error">10.4</span> K</div>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h3>Zener-Begrenzung</h3>
+              <p class="panel-copy">
+                In Sperrrichtung begrenzt die Zenerdiode ab ihrer Zenerspannung
+                die Ausgangsspannung.
+              </p>
+              <label class="field">
+                <span>Eingangsspannung in V</span>
+                <input id="zener-input" type="range" min="0" max="15" step="0.1" value="7.5" />
+              </label>
+              <label class="field">
+                <span>Zenerspannung in V</span>
+                <input id="zener-voltage" type="range" min="3.3" max="12" step="0.1" value="5.1" />
+              </label>
+              <div class="formula-box">
+                <div>Eingang = <span id="zener-in-display">7.5</span> V</div>
+                <div>Begrenzter Ausgang = <span id="zener-out-display">5.1</span> V</div>
+              </div>
+              <div class="bar-visual">
+                <div class="bar-track"><div class="bar-fill input" id="zener-input-bar"></div></div>
+                <div class="bar-track"><div class="bar-fill output" id="zener-output-bar"></div></div>
+              </div>
             </article>
           </div>
         </section>
 
-        <section class="module card" id="automation">
+        <section class="card section" id="automation">
           <div class="section-heading">
-            <p class="section-label">Modul 06</p>
-            <h2>Steuerung, Regelung und SPS-Zyklus</h2>
-            <p>
-              Dieses Modul macht die pruefungsrelevante Unterscheidung sichtbar:
-              offen ohne Rueckmeldung oder geschlossen mit Rueckfuehrung.
-            </p>
+            <p class="section-label">Automatisierung</p>
+            <h2>Offene Steuerung, geschlossene Regelung und SPS-Scan</h2>
           </div>
-
-          <div class="module-grid two-up">
+          <div class="double-grid">
             <article class="panel">
               <h3>Steuerung vs. Regelung</h3>
               <p class="panel-copy">
-                Beide Systeme bekommen dieselbe Stoerung. Nur das Rueckkopplungssystem
-                kann aktiv auf die Abweichung reagieren.
+                Beide Systeme bekommen dieselbe Stoerung. Nur die Rueckfuehrung
+                kann den Fehler aktiv ausregeln.
               </p>
               <label class="field">
                 <span>Solltemperatur in °C</span>
                 <input id="control-setpoint" type="range" min="18" max="26" step="0.5" value="22" />
               </label>
               <label class="field">
-                <span>Stoerung: Abfall der Umgebung in °C</span>
+                <span>Stoerung in °C</span>
                 <input id="control-disturbance" type="range" min="2" max="12" step="0.5" value="8" />
               </label>
-              <canvas id="control-chart" width="420" height="240" class="chart large"></canvas>
+              <canvas id="control-chart" class="chart" width="420" height="240"></canvas>
               <div class="formula-box">
-                <div>Offene Steuerung Endwert = <span id="open-loop-end">0.0</span> °C</div>
+                <div>Steuerung Endwert = <span id="open-loop-end">0.0</span> °C</div>
                 <div>Regelung Endwert = <span id="closed-loop-end">0.0</span> °C</div>
               </div>
-              <p class="trap-note">
-                Steuerung: ohne Rueckmeldung. Regelung: mit Rueckmeldung des Istwerts.
-              </p>
             </article>
 
             <article class="panel">
               <h3>SPS-Zyklus</h3>
               <p class="panel-copy">
-                Die SPS liest Eingänge typischerweise zu Zyklusbeginn ein, verarbeitet
-                dann das Programm und aktualisiert die Ausgaenge erst danach.
+                Der Zyklus ist der Schluessel zum Verstaendnis vieler SPS-Fragen.
               </p>
               <div class="cycle-steps" id="cycle-steps">
-                <div class="cycle-step active">1. Eingaenge einlesen</div>
-                <div class="cycle-step">2. Prozessabbild Eingabe</div>
-                <div class="cycle-step">3. Anwenderprogramm</div>
-                <div class="cycle-step">4. Prozessabbild Ausgabe</div>
-                <div class="cycle-step">5. Ausgaenge aktualisieren</div>
+                <div class="cycle-step active">1. Eingaenge lesen</div>
+                <div class="cycle-step">2. Eingangsabbild</div>
+                <div class="cycle-step">3. Programm</div>
+                <div class="cycle-step">4. Ausgangsabbild</div>
+                <div class="cycle-step">5. Ausgaenge schreiben</div>
               </div>
               <div class="button-row">
-                <button id="cycle-step-button" class="primary-button" type="button">
-                  Naechster Schritt
-                </button>
-                <button id="cycle-auto-button" class="secondary-button" type="button">
-                  Auto abspielen
-                </button>
+                <button id="cycle-step-button" class="primary-button" type="button">Naechster Schritt</button>
+                <button id="cycle-auto-button" class="secondary-button" type="button">Auto</button>
               </div>
               <div class="formula-box">
-                <div>Aktueller Schritt: <span id="cycle-title">Eingaenge einlesen</span></div>
-                <div id="cycle-copy">
-                  Sensorwerte werden eingelesen und fuer die Programmbearbeitung eingefroren.
-                </div>
+                <div id="cycle-title">Eingaenge lesen</div>
+                <div id="cycle-copy">Sensorwerte werden zu Zyklusbeginn erfasst.</div>
               </div>
-              <p class="trap-note">
-                Pruefungsfalle: Eingänge werden nicht mitten im Programmzyklus
-                staendig live neu gelesen.
-              </p>
             </article>
           </div>
         </section>
 
-        <section class="module card" id="final-check">
+        <section class="card section" id="final-check">
           <div class="section-heading">
-            <p class="section-label">Abschluss</p>
-            <h2>Finaler Schnellcheck</h2>
-            <p>
-              Beantworte die Kernfragen. Das Ziel ist nicht Raten, sondern
-              verknuepftes Verstehen.
-            </p>
+            <p class="section-label">Pruefungsmodus</p>
+            <h2>Kurzer Abschluss-Check</h2>
           </div>
-          <div class="check-layout">
-            <div class="question-box">
-              <p class="question-label" id="quiz-progress">Frage 1 von 6</p>
-              <h3 id="quiz-question">Was beschreibt Stromstaerke physikalisch?</h3>
+          <div class="double-grid">
+            <article class="panel">
+              <p class="question-label" id="quiz-progress">Frage 1 von 7</p>
+              <h3 id="quiz-question">Warum braucht eine LED meist einen Vorwiderstand?</h3>
               <div class="quiz-options" id="quiz-options"></div>
               <p class="quiz-feedback" id="quiz-feedback"></p>
-            </div>
-            <aside class="summary-panel">
-              <h3>Mini-Lernzettel</h3>
-              <ul>
-                <li>Q an Ladungstraeger gebunden, I = dQ/dt, U = dW/dQ, P = U · I</li>
-                <li>Leiter: ueberlappende oder frei zugaengliche Energiebereiche</li>
-                <li>Halbleiter: kleine Bandluecke, Dotierung bestimmt Mehrheitstraeger</li>
-                <li>LED immer mit Strombegrenzung, Spule gedanklich immer mit Freilauf</li>
-                <li>OPV mit Gegenkopplung regelt U+ ≈ U-</li>
-                <li>Steuerung offen, Regelung geschlossen</li>
+            </article>
+            <aside class="panel">
+              <h3>Was du hier wirklich koennen solltest</h3>
+              <ul class="exam-list">
+                <li>Q, I, U, P sicher auseinanderhalten</li>
+                <li>Innenwiderstand und Klemmenspannung deuten</li>
+                <li>Bandmodell, Dotierung und pn-Idee erklaeren</li>
+                <li>LED, Zener, Freilauf, Pull-up praktisch begruenden</li>
+                <li>OPV mit Gegenkopplung rechnerisch und qualitativ verstehen</li>
+                <li>Kondensatorfall an Quelle vs. getrennt sauber trennen</li>
+                <li>Steuerung, Regelung und SPS-Zyklus unterscheiden</li>
               </ul>
             </aside>
           </div>
